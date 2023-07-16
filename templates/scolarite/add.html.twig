@@ -1,0 +1,73 @@
+{% extends('ComponentDashbord/index.html.twig') %}
+
+{% block content %}
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Formulaire de paiement des cours de soutiens de l'élèves </h2>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-content">
+                    {{ form_start(form ) }}
+
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {{ form_label(form.avance) }}
+                                <spa style="color: red">*</spa>
+                                {{ form_widget(form.avance) }}
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">Mois de paiement  <spa style="color: red">*</spa></label>
+                                <select class="form-control select2" name="mois" >
+                                    <option >JANVIER {{annee}}</option>
+                                    <option >FEVRIER {{annee}}</option>
+                                    <option>MARS {{annee}}</option>
+                                    <option >AVRIL {{annee}}</option>
+                                    <option >MAI {{annee}}</option>
+                                    <option >JUIN {{annee}}</option>
+                                    <option >JUILLET {{annee}}</option>
+                                    <option >AOUT {{annee}}</option>
+                                    <option >SEPTEMBRE {{annee}}</option>
+                                    <option >OCTOBRE {{annee}}</option>
+                                    <option>NOVEMBRE {{annee}}</option>
+                                    <option >DECEMBRE {{annee}}</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="form-group" style="margin-right: 47%;">
+                        <button class="btn btn-md btn-primary pull-right" type="submit">Valider</button>
+                    </div>
+                    <br>
+                </div>
+                {% for montant in montants %}
+                <input type="hidden" value="{{ montant.frais}}" name="montant">
+
+                {% endfor %}
+
+                {{ form_end(form) }}
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
