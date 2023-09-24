@@ -32,6 +32,8 @@ class Classe
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'userclasse')]
     private Collection $users;
+    #[ORM\OneToMany(mappedBy: 'classepresence', targetEntity: PresenceStudent::class)]
+    private Collection $presenceStudents;
 
 
 
@@ -40,6 +42,8 @@ class Classe
         $this->createAt = new \DateTime();
         $this->updatedAt = new \DateTime();
         $this->users = new ArrayCollection();
+        $this->presenceStudents = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -128,6 +132,36 @@ class Classe
     {
         if ($this->users->removeElement($user)) {
             $user->removeUserclasse($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PresenceStudent>
+     */
+    public function getPresenceStudents(): Collection
+    {
+        return $this->presenceStudents;
+    }
+
+    public function addPresenceStudent(PresenceStudent $presenceStudent): static
+    {
+        if (!$this->presenceStudents->contains($presenceStudent)) {
+            $this->presenceStudents->add($presenceStudent);
+            $presenceStudent->setMatierepresence($this);
+        }
+
+        return $this;
+    }
+
+    public function removePresenceStudent(PresenceStudent $presenceStudent): static
+    {
+        if ($this->presenceStudents->removeElement($presenceStudent)) {
+            // set the owning side to null (unless already changed)
+            if ($presenceStudent->getMatierepresence() === $this) {
+                $presenceStudent->setMatierepresence(null);
+            }
         }
 
         return $this;

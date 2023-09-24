@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^2.10",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.15",
+        "dompdf/dompdf": "^2.0",
         "php-flasher/flasher-symfony": "^1.15",
         "php-flasher/flasher-toastr-symfony": "^1.15",
         "phpdocumentor/reflection-docblock": "^5.3",
@@ -39,6 +40,7 @@
         "symfony/twig-bundle": "6.3.*",
         "symfony/validator": "6.3.*",
         "symfony/web-link": "6.3.*",
+        "symfony/webpack-encore-bundle": "^2.0",
         "symfony/yaml": "6.3.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"

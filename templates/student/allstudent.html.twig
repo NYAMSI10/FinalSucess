@@ -4,7 +4,7 @@
 
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Liste des élèves ({{ periodes.name }}) </h2>
+            <h2>Liste des élèves de <strong>{{ nameclasse.name }}</strong> pour la période <strong>{{ periode.name }}</strong> </h2>
 
         </div>
         <div class="col-lg-2">
@@ -36,38 +36,48 @@
                                     <th class="text-center">Inscription</th>
                                     <th class="text-center">Rame</th>
                                     <th class="text-center">Scolarité</th>
+                                    <th class="text-center">statut</th>
                                     <th class="text-center">Action</th>
 
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for user in users %}
-                                    <tr class="gradeX">
-                                        <td class="text-center"> {{ user.firstname }}</td>
-                                        <td class="text-center">{{ user.lastname}}</td>
-                                        <td class="text-center">{{ user.email}}</td>
-                                        <td class="text-center">{{ user.quartier}}</td>
-                                        <td class="text-center">{{ user.phone}}</td>
-                                        <td class="text-center">{{ user.inscription}}</td>
-                                        <td class="text-center">{{ user.israme == 1? 'oui' : 'non'}}</td>
+                                {% for userperiode in userperiodes %}
+
+                                {% for userclasse in userclasses %}
+
+                                    {% if userperiode.firstname == userclasse.firstname %}
+                                    <tr class="gradeX" id="delete-{{ userperiode.id }}">
+                                        <td class="text-center"> {{ userperiode.firstname }} </td>
+                                        <td class="text-center"> {{ userperiode.firstname }} </td>
+                                        <td class="text-center">{{ userperiode.email}}</td>
+                                        <td class="text-center">{{ userperiode.quartier}}</td>
+                                        <td class="text-center">{{ userperiode.phone}}</td>
+                                        <td class="text-center">{{ userperiode.inscription}} cfa</td>
+                                        <td class="text-center">{{ userperiode.israme == 1? 'oui' : 'non'}}</td>
                                         <td class="text-center">   <a class="btn btn-space btn-info btn-xs voir"
-                                                                      href="{{ path('allscolarite',{'id': user.id}) }}"><i
-                                                        class="fa fa-1x fa-money sr-icons"></i></a></td>
+                                                                      href="{{ path('allscolarite', {'id': userperiode.id}) }}"><i
+                                                        class="fa fa-1x fa-money sr-icons"></i></a>
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="checkbox"  id="statut"   />
+
                                         </td>
                                         <td class="text-center">
                                             <a target="_blank" class=" btn btn-space btn-primary btn-xs sr-icons "
-                                               style="color:white;" href="{{ path('updateteacher',{'id': user.id}) }}"><i
+                                               style="color:white;" href=""><i
                                                         class="fa fa-1x fa-pencil sr-icons"></i> </a>
                                             <a target="_blank" class=" btn btn-space btn-danger btn-xs sr-icons "
-                                               style="color:white;" href="{{ path('deleteteacher',{'id': user.id}) }}"><i
-                                                        class="fa fa-1x fa-trash sr-icons" onclick="return confirm('Voulez-vous supprimée cette prime?')"></i> </a>
+                                               style="color:white;" onclick="deletestudent({{ userperiode.id }})"><i
+                                                        class="fa fa-1x fa-trash sr-icons" ></i> </a>
 
                                         </td>
 
                                     </tr>
 
+                                    {% endif %}
                                 {% endfor %}
-
+                                {% endfor %}
                                 </tfoot>
                             </table>
                         </div>
@@ -77,5 +87,42 @@
             </div>
         </div>
     </div>
+
+<script>
+    function deletestudent(id) {
+        alert('Voulez-vous vraiment supprimé cet élève?')
+        // Effectuez une requête AJAX pour supprimer l'article des favoris
+        fetch('deletestudent/' + id, {
+            method: 'POST',
+
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+
+                // Mettez à jour la liste des favoris sur la page sans rafraîchir
+                // Par exemple, supprimez l'élément de la liste avec l'ID correspondant
+                const favoriteItem = document.getElementById('delete-' + id);
+                if (favoriteItem) {
+                    favoriteItem.remove();
+                }
+                setTimeout(function () {
+                    toastr.options = {
+                        closeButton: true,
+                        progressBar: true,
+                        showMethod: 'slideDown',
+                        timeOut: 4000
+                    };
+
+                    toastr.success('Elève supprimé ');
+
+                }, 1300);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+</script>
+
 
 {% endblock %}

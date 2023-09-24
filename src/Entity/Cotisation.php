@@ -28,6 +28,9 @@ class Cotisation
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'cotisations', cascade: ['persist'])]
+    private ?User $usercotisation = null;
+
     public function __construct()
     {
         $this->createAt = new \DateTime();
@@ -85,4 +88,18 @@ class Cotisation
 
         return $this;
     }
+
+    public function getUsercotisation(): ?User
+    {
+        return $this->usercotisation;
+    }
+
+    public function setUsercotisation(?User $usercotisation): static
+    {
+        $this->usercotisation = $usercotisation;
+
+        return $this;
+    }
+
+
 }

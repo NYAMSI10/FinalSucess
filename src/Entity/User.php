@@ -89,6 +89,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userscolarite', targetEntity: Scolarite::class)]
     private Collection $scolarites;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $IsAtive = null;
+
+    #[ORM\OneToMany(mappedBy: 'usercotisation', targetEntity: Cotisation::class)]
+    private Collection $cotisations;
+
+    #[ORM\OneToMany(mappedBy: 'userpresence', targetEntity: PresenceStudent::class)]
+    private Collection $presenceStudents;
+
+    #[ORM\ManyToMany(targetEntity: PresenceStudent::class, mappedBy: 'student')]
+    private Collection $absenceStudents;
+
+    #[ORM\OneToMany(mappedBy: 'usersalaire', targetEntity: Salaire::class)]
+    private Collection $salaires;
+
     public function __construct()
     {
         $this->createAt = new \DateTime();
@@ -97,6 +112,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userclasse = new ArrayCollection();
         $this->usermatiere = new ArrayCollection();
         $this->scolarites = new ArrayCollection();
+        $this->cotisations = new ArrayCollection();
+        $this->presenceStudents = new ArrayCollection();
+        $this->absenceStudents = new ArrayCollection();
+        $this->salaires = new ArrayCollection();
 
     }
 
@@ -449,5 +468,140 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function isIsAtive(): ?bool
+    {
+        return $this->IsAtive;
+    }
+
+    public function setIsAtive(?bool $IsAtive): static
+    {
+        $this->IsAtive = $IsAtive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cotisation>
+     */
+    public function getCotisations(): Collection
+    {
+        return $this->cotisations;
+    }
+
+    public function addCotisation(Cotisation $cotisation): static
+    {
+        if (!$this->cotisations->contains($cotisation)) {
+            $this->cotisations->add($cotisation);
+            $cotisation->setUsercotisation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCotisation(Cotisation $cotisation): static
+    {
+        if ($this->cotisations->removeElement($cotisation)) {
+            // set the owning side to null (unless already changed)
+            if ($cotisation->getUsercotisation() === $this) {
+                $cotisation->setUsercotisation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getFirstname();
+    }
+
+    /**
+     * @return Collection<int, PresenceStudent>
+     */
+    public function getPresenceStudents(): Collection
+    {
+        return $this->presenceStudents;
+    }
+
+    public function addPresenceStudent(PresenceStudent $presenceStudent): static
+    {
+        if (!$this->presenceStudents->contains($presenceStudent)) {
+            $this->presenceStudents->add($presenceStudent);
+            $presenceStudent->setUserpresence($this);
+        }
+
+        return $this;
+    }
+
+    public function removePresenceStudent(PresenceStudent $presenceStudent): static
+    {
+        if ($this->presenceStudents->removeElement($presenceStudent)) {
+            // set the owning side to null (unless already changed)
+            if ($presenceStudent->getUserpresence() === $this) {
+                $presenceStudent->setUserpresence(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PresenceStudent>
+     */
+    public function getAbsenceStudents(): Collection
+    {
+        return $this->absenceStudents;
+    }
+
+    public function addAbsenceStudent(PresenceStudent $absenceStudent): static
+    {
+        if (!$this->absenceStudents->contains($absenceStudent)) {
+            $this->absenceStudents->add($absenceStudent);
+            $absenceStudent->addStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAbsenceStudent(PresenceStudent $absenceStudent): static
+    {
+        if ($this->absenceStudents->removeElement($absenceStudent)) {
+            $absenceStudent->removeStudent($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Salaire>
+     */
+    public function getSalaires(): Collection
+    {
+        return $this->salaires;
+    }
+
+    public function addSalaire(Salaire $salaire): static
+    {
+        if (!$this->salaires->contains($salaire)) {
+            $this->salaires->add($salaire);
+            $salaire->setUsersalaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSalaire(Salaire $salaire): static
+    {
+        if ($this->salaires->removeElement($salaire)) {
+            // set the owning side to null (unless already changed)
+            if ($salaire->getUsersalaire() === $this) {
+                $salaire->setUsersalaire(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 }

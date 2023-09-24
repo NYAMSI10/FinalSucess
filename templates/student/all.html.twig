@@ -43,7 +43,7 @@
                                     <tr class="gradeX">
 
                                         <td class="text-center"> {{ periode.createAt|date('d-m-Y') }}</td>
-                                        <td class="text-center"><a href="{{ path('showstudent',{'id': periode.id}) }}">{{ periode.name}}</a>
+                                        <td class="text-center"><a href="{{ path('studentclasse',{'id': periode.id}) }}">{{ periode.name}}</a>
                                         </td>
                                     </tr>
                                 {% endfor %}

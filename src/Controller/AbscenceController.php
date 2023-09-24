@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Controller;
+
+use App\Repository\ClasseRepository;
+use App\Repository\MatiereRepository;
+use App\Repository\PeriodeRepository;
+use App\Repository\PresenceStudentRepository;
+use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class AbscenceController extends AbstractController
+{
+    #[Route('/Abscence/student', name: 'abscenceperiode')]
+    public function index(PeriodeRepository $periodeRepository): Response
+    {
+        $periode = $periodeRepository->findAll();
+
+        return $this->render('abscence/allperiode.html.twig', [
+            'periodes' => $periode,
+        ]);
+    }
+
+    #[Route('/abscence/classe/{id}', name: 'abscenceclasse')]
+    public function abscenceclasse($id, ClasseRepository $classeRepository): Response
+    {
+        $classe = $classeRepository->findAll();
+
+
+        return $this->render('abscence/allclasse.html.twig', [
+            'classes' => $classe,
+            'idperiode' => $id
+        ]);
+    }
+
+    #[Route('/abscence/date/periode?={idperiode}/classe?={idclasse}', name: 'abscencedate')]
+    public function abscencedate($idperiode, $idclasse, ClasseRepository $classeRepository,
+                                 PeriodeRepository $periodeRepository, PresenceStudentRepository  $presenceStudentRepository): Response
+    {
+        $idclas = $classeRepository->find($idclasse);
+        $idperio = $periodeRepository->find($idperiode);
+
+        $abscencedate = $presenceStudentRepository->AbscenceByDate($idclas->getId(), $idperio->getId());
+
+
+
+        return $this->render('abscence/alldate.html.twig', [
+            'abscencedates' => $abscencedate,
+            'idperiode' => $idperiode,
+            'idclasse' => $idclasse
+        ]);
+    }
+    #[Route('/abscence/student/periode?={idperiode}/classe?={idclasse}/jours?={createdAt}', name: 'abscenceuser')]
+    public function abscenceuser($idperiode, $idclasse,$createdAt ,ClasseRepository $classeRepository, MatiereRepository $matiereRepository,
+                                 PeriodeRepository $periodeRepository, PresenceStudentRepository $presenceStudentRepository): Response
+    {
+
+        $absencestudent = $presenceStudentRepository->findBy(['datejours'=>$createdAt,'periodepresence'=>$idperiode, 'classepresence'=>$idclasse]);
+
+        $nameclasse = $classeRepository->find($idclasse);
+
+
+        $userperiode = $periodeRepository->find($idperiode);
+
+
+
+        return $this->render('abscence/allstudent.html.twig', [
+            'absencestudents'=>$absencestudent,
+            'nameclasse' => $nameclasse,
+            'id'=>$userperiode,
+        ]);
+    }
+}

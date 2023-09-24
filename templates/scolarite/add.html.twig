@@ -32,19 +32,9 @@
                             <div class="form-group">
                                 <label class="form-label">Mois de paiement  <spa style="color: red">*</spa></label>
                                 <select class="form-control select2" name="mois" >
-                                    <option >JANVIER {{annee}}</option>
-                                    <option >FEVRIER {{annee}}</option>
-                                    <option>MARS {{annee}}</option>
-                                    <option >AVRIL {{annee}}</option>
-                                    <option >MAI {{annee}}</option>
-                                    <option >JUIN {{annee}}</option>
-                                    <option >JUILLET {{annee}}</option>
-                                    <option >AOUT {{annee}}</option>
-                                    <option >SEPTEMBRE {{annee}}</option>
-                                    <option >OCTOBRE {{annee}}</option>
-                                    <option>NOVEMBRE {{annee}}</option>
-                                    <option >DECEMBRE {{annee}}</option>
-
+                                    {% for annee in annees %}
+                                        <option >{{ annee }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>

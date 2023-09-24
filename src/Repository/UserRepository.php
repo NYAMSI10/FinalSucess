@@ -68,6 +68,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+    public function TeacherByClasse($classe): array
+    {
+
+        return $this->createQueryBuilder('u')
+            ->select('u','c')
+            ->join('u.userclasse', 'c')
+            ->andWhere('c.id = :classe')
+            ->andWhere('u.IsTeacher = 1')
+            ->setParameter('classe',$classe)
+            ->getQuery()
+            ->getResult();
+    }
     public function StudentByPeriode($periode): array
     {
 
@@ -80,7 +92,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+    public function StudentByClasse($classe): array
+    {
 
+        return $this->createQueryBuilder('u')
+            ->select('u','c')
+            ->join('u.userclasse', 'c')
+            ->andWhere('c.id = :classe')
+            ->andWhere('u.IsTeacher = 0')
+            ->setParameter('classe',$classe)
+            ->getQuery()
+            ->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?User
 //    {

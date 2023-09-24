@@ -32,8 +32,6 @@ class Prime
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'userprime')]
-    private Collection $users;
 
     public function __construct()
     {
@@ -99,31 +97,10 @@ class Prime
         $this->updatedAt = new \DateTime();
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
+    public function __toString(): string
     {
-        return $this->users;
+        return $this->getName();
     }
 
-    public function addUser(User $user): static
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addUserprime($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeUserprime($this);
-        }
-
-        return $this;
-    }
 
 }

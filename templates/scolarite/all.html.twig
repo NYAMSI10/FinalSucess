@@ -25,7 +25,7 @@
                     <div class="ibox-content">
                         <div class="">
                             <a href="{{ path('addscolarite',{'id':nameuser.id }) }}" class="btn btn-primary ">Ajouter
-                            un paiement</a>
+                                un paiement</a>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered table-hover " id="editable">
@@ -38,7 +38,7 @@
                                     <th class="text-center">Avance ou Total</th>
                                     <th class="text-center"> Statut ou Reste du paiement</th>
 
-                                    <th class="text-center">Historique du paiement</th>
+
                                     <th class="text-center">Action</th>
 
                                 </tr>
@@ -47,22 +47,37 @@
                                 {% for scolarite in scolarites %}
                                     <tr class="gradeX">
                                         <td class="text-center"> {{ scolarite.createAt|date('d-m-Y') }}</td>
-                                        <td class="text-center">{{ scolarite.mois}}</td>
+                                        <td class="text-center">{{ scolarite.mois }}</td>
                                         {% for montant in montants %}
-                                        <td class="text-center">{{ montant.name}}</td>
-                                        <td class="text-center">{{ montant.frais}}</td>
+                                            <td class="text-center">{{ montant.name }}</td>
+                                            <td class="text-center">{{ montant.frais }} cfa</td>
                                         {% endfor %}
-                                        <td class="text-center">{{ scolarite.avance}}</td>
-                                        <td class="text-center">{{ scolarite.reste}}</td>
-                                        <td class="text-center"></td>
+                                        <td class="text-center">{{ scolarite.avance }}cfa</td>
+                                        <td class="text-center">
+                                            {% if scolarite.reste != 0 %}
+                                                <strong style="color: red">{{ scolarite.reste }}cfa</strong>
+                                            {% else %}
+                                                <strong class=" btn btn-space btn-primary btn-xs sr-icons "><i
+                                                            class="fa fa-1x fa-check sr-icons"></i></strong>
+                                            {% endif %}
+                                        </td>
 
                                         <td class="text-center">
                                             <a target="_blank" class=" btn btn-space btn-primary btn-xs sr-icons "
-                                               style="color:white;" href=""><i
+                                               style="color:white;" href="{{ path('recuscolarite',{'id': scolarite.id}) }}"><i
+                                                        class="fa fa-1x fa-cloud-download sr-icons"></i> </a>
+                                            <a target="_blank" class=" btn btn-space btn-primary btn-xs sr-icons "
+                                               style="color:white;" href="{{ path('historyscolarite',{'id': scolarite.id}) }}"><i
+                                                        class="fa fa-1x fa-history sr-icons"></i> </a>
+                                            <a target="_blank" class=" btn btn-space btn-primary btn-xs sr-icons "
+                                               style="color:white;"
+                                               href="{{ path('updatescolarite',{'id': scolarite.id}) }}"><i
                                                         class="fa fa-1x fa-pencil sr-icons"></i> </a>
                                             <a target="_blank" class=" btn btn-space btn-danger btn-xs sr-icons "
-                                               style="color:white;" href=""><i
-                                                        class="fa fa-1x fa-trash sr-icons" onclick="return confirm('Voulez-vous supprimée cette prime?')"></i> </a>
+                                               style="color:white;" href="{{ path('deletescolarite',{'id': scolarite.id}) }}"><i
+                                                        class="fa fa-1x fa-trash sr-icons"
+                                                        onclick="return confirm('Voulez-vous supprimée ce paiement ?')"></i>
+                                            </a>
 
                                         </td>
 
@@ -81,3 +96,24 @@
     </div>
 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

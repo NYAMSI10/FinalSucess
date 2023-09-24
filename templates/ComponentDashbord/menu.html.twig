@@ -11,14 +11,22 @@
 
                              </span>
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Admin</strong>
-                             </span> <span class="text-muted text-xs block">Admin <b class="caret"></b></span> </span>
+                            <span class="clear"> <span class="block m-t-xs"> <strong
+                                            class="font-bold">{{ app.user }}</strong>
+                             </span> <span class="text-muted text-xs block"> {% if is_granted('ROLE_TEACHER') %}
+                                        Enseignant
+                                    {% elseif is_granted('ROLE_ADMIN') %}
+                                        Administrateur
+                                    {% elseif is_granted('ROLE_STUDENT') %}
+                                        Élève
+                                    {% endif %}
+                                    <b class="caret"></b></span> </span>
                 </a>
                 <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                    <li><a href="">Profile</a></li>
+                    <li><a href="">Profil</a></li>
 
                     <li class="divider"></li>
-                    <li><a href="">Logout</a></li>
+                    <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
                 </ul>
             </div>
             <div class="logo-element">
@@ -43,15 +51,18 @@
             <a href="{{ path('allmatiere') }}"><i class="fa fa-diamond"></i> <span class="nav-label">Matiéres</span></a>
         </li>
         <li>
-            <a href="{{ path('allclasse') }}"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Classes</span></a>
+            <a href="{{ path('allclasse') }}"><i class="fa fa-bar-chart-o"></i> <span
+                        class="nav-label">Classes</span></a>
 
         </li>
         <li>
-            <a href="{{ path('allteacher') }}"><i class="fa fa-envelope"></i> <span class="nav-label">Enseignants</span> </a>
+            <a href="{{ path('allteacher') }}"><i class="fa fa-envelope"></i> <span class="nav-label">Enseignants</span>
+            </a>
 
         </li>
         <li>
-            <a href="{{ path('allstudent') }}"><i class="fa fa-envelope"></i> <span class="nav-label">Elèves </span> </a>
+            <a href="{{ path('allstudent') }}"><i class="fa fa-envelope"></i> <span class="nav-label">Elèves </span>
+            </a>
 
         </li>
         <li>
@@ -62,21 +73,41 @@
 
         </li>
         <li>
-            <a href="{{ path('allevenement') }}"><i class="fa fa-edit"></i> <span class="nav-label">Evénèmentts </span></a>
+            <a href="{{ path('allevenement') }}"><i class="fa fa-edit"></i> <span
+                        class="nav-label">Evénèments </span></a>
 
         </li>
+
+        <li>
+            <a href="{{ path('allbulletinpaie') }}"><i class="fa fa-edit"></i> <span
+                        class="nav-label">Mes bulletins de paie </span></a>
+
+        </li>
+        <li>
+            <a href="{{ path('myrecu') }}"><i class="fa fa-edit"></i> <span
+                        class="nav-label">Mes reçus de paiement </span></a>
+
+        </li>
+
         <li>
             <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Discipline </span><span
                         class="fa arrow"></span></a>
             <ul class="nav nav-second-level collapse">
-                <li><a href=""> Faire l'appel</a></li>
-                <li><a href="">Liste des Absences</a></li>
+                <li><a href="{{ path('presenceperiode') }}"> Faire l'appel</a></li>
+                <li><a href="{{ path('abscenceperiode') }}">Liste des Absences</a></li>
 
             </ul>
         </li>
         <li>
-            <a href=""><i class="fa fa-edit"></i> <span class="nav-label">Présence </span></a>
+            <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Présence enseignant </span><span
+                        class="fa arrow"></span></a>
+            <ul class="nav nav-second-level collapse">
+                <li><a href="{{ path('validationteacher') }}"> Validation</a></li>
+                <li><a href="{{ path('absenceteacher') }}">Liste des Absences</a></li>
+
+            </ul>
         </li>
+
         <li>
             <a href=""><i class="fa fa-edit"></i> <span class="nav-label">Vos absences </span></a>
         </li>
@@ -90,7 +121,9 @@
 
             </ul>
         </li>
-
+        <li>
+            <a href="{{ path('allcotisation') }}"><i class="fa fa-edit"></i> <span class="nav-label">Cotisations </span></a>
+        </li>
     </ul>
 
 </div>

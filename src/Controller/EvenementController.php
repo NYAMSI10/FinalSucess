@@ -19,6 +19,8 @@ class EvenementController extends AbstractController
     {
         $event = $evenementRepository->findAll();
         $events = new Evenement();
+        $datetoday = date('Y-m-d');
+
 
         $form = $this->createForm(EvenementType::class, $events);
         $form->handleRequest($request);
@@ -35,6 +37,7 @@ class EvenementController extends AbstractController
 
         return $this->render('evenement/all.html.twig',[
             'events'=>$event,
+            'datetoday'=>$datetoday,
             'form'=>$form->createView(),
         ]);
     }

@@ -32,14 +32,14 @@ class Evenement
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'userevenement')]
-    private Collection $users;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $end = null;
 
     public function __construct()
     {
         $this->createAt = new \DateTime();
         $this->updatedAt = new \DateTime();
-        $this->users = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -99,29 +99,16 @@ class Evenement
         $this->updatedAt = new \DateTime();
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
+
+
+    public function getEnd(): ?\DateTimeInterface
     {
-        return $this->users;
+        return $this->end;
     }
 
-    public function addUser(User $user): static
+    public function setEnd(?\DateTimeInterface $end): static
     {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addUserevenement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeUserevenement($this);
-        }
+        $this->end = $end;
 
         return $this;
     }

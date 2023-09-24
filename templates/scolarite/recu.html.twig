@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Recu de paiement</title>
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
+    <style>
+        /*content*/
+        table {
+            width: 100%;
+            color: #333333;
+            font-family: helvetica;
+            line-height: 5mm;
+            border-collapse: collapse;
+            font-size: 15px;
+            font-weight: 300;
+        }
+
+        table td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+
+        table tr {
+            float: left;
+            padding: 8px 0;
+            border-bottom: 1px dotted #d9d9d9;
+        }
+        .text-right {
+            text-align: right;
+        }
+        @page {
+            margin: 0cm 0cm;
+        }
+
+        /** Define now the real margins of every page in the PDF **/
+        body {
+            margin-top: 2cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+            margin-bottom: 2cm;
+        }
+
+        /** Define the header rules **/
+        header {
+            position: fixed;
+            top: 0cm;
+            left: 0cm;
+            right: 0cm;
+            height: 2cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+        }
+
+        /** Define the footer rules **/
+        footer {
+            position: fixed;
+            bottom: 0cm;
+            left: 0cm;
+            right: 0cm;
+            height: 2cm;
+            text-align: center;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+<page backbottom="10mm" backleft="10mm" backright="10mm" backtop="10mm" footer="page;">
+
+
+
+    <!-- Wrap the content of your PDF inside a main tag -->
+
+
+    <table style="vertical-align: top; width: 100%;">
+        <tbody>
+        <tr>
+            <td style="width: 100%; text-align: left">
+                <address>
+                    <strong> Fait par :</strong><br>
+                       Groupe Sucess + <br>
+                    <strong>Numéro de téléphone:</strong>
+                    <br>
+                          697665729<br>
+                    <strong>à:</strong><br>
+                    Yaoundé<br>
+
+                    <br>
+                    <strong>Date de paiement:</strong><br>
+                    {{ scolarite.createAt|date('d-m-Y') }}
+                    <br><br>
+                </address>
+            </td>
+            <td style="width: 100%; text-align: right">
+                <address>
+                    <strong>à l'élève:</strong><br>
+                    {{ nameuser.firstname}}   {{ nameuser.lastname}}<br>
+                    <strong>Classe:</strong><br>
+                    {% for classe in classes %}
+                    {{ classe.name }}
+                    {% endfor %}<br>
+                    <strong>Période:</strong><br>
+                    {% for periode in periodes %}
+                        {{ periode.name }}
+                    {% endfor %}<br>
+                    <br>
+                    <strong>Mois de paiement:</strong><br>
+                     {{ scolarite.mois }}<br><br>
+                </address>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h3 style="text-align: center; color: red"> </h3>
+    <br>
+    <h3 style="text-align: center"> Réçu de paiement des cours de répétition</h3>
+    <br>
+    <table class="produit" style="vertical-align: top; width: 100%;">
+        <thead style="text-align: center">
+        <tr>
+            <th style="border-bottom: 1px solid #dee2e6; width: 40%;" class="text-center"><strong>Mois de paiement</strong></th>
+            <th style="border-bottom: 1px solid #dee2e6" class="text-center"><strong>Net à payer</strong></th>
+            <th style="border-bottom: 1px solid #dee2e6; width: 50%" class="text-center"><strong>Avance ou Total payé</strong></th>
+            <th style="border-bottom: 1px solid #dee2e6;  width: 50%" class="text-end"><strong>Reste à payer</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr >
+                <td style="width: 30%; text-align: center">{{ scolarite.mois }}</td>
+                <td style="width: 30%; text-align: center">{% for classe in classes %}
+                        {{ classe.frais }} cfa
+                    {% endfor %}</td>
+                <td style="width: 30%; text-align: center">{{ scolarite.avance }} cfa</td>
+                <td style="width: 30%; text-align: center">{{ scolarite.reste }} cfa</td>
+        <tr>
+            <tr >
+                <td class="thick-line" ></td>
+                <td class="thick-line"></td>
+                <td class="thick-line"></td>
+                <td class="thick-line"></td>
+                <td class="thick-line"></td>
+                <td class="thick-line"></td>
+
+            </tr>
+
+        </tbody>
+    </table>
+
+
+</page>
+</body>
+</html>
+

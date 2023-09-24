@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Document</title>
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
+    <style>
+        /*content*/
+        table {
+            width: 100%;
+            color: #333333;
+            font-family: helvetica;
+            line-height: 5mm;
+            border-collapse: collapse;
+            font-size: 15px;
+            font-weight: 300;
+        }
+
+        table td {
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+
+        table tr {
+            float: left;
+            padding: 8px 0;
+            border-bottom: 1px dotted #d9d9d9;
+        }
+        .text-right {
+            text-align: right;
+        }
+        @page {
+            margin: 0cm 0cm;
+        }
+
+        /** Define now the real margins of every page in the PDF **/
+        body {
+            margin-top: 2cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+            margin-bottom: 2cm;
+        }
+
+        /** Define the header rules **/
+        header {
+            position: fixed;
+            top: 0cm;
+            left: 0cm;
+            right: 0cm;
+            height: 2cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+        }
+
+        /** Define the footer rules **/
+        footer {
+            position: fixed;
+            bottom: 0cm;
+            left: 0cm;
+            right: 0cm;
+            height: 2cm;
+            text-align: center;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+<page backbottom="10mm" backleft="10mm" backright="10mm" backtop="10mm" footer="page;">
+
+
+
+    <!-- Wrap the content of your PDF inside a main tag -->
+
+
+
+
+    <h3 style="text-align: center"> Liste des absents  du {{ datejours|date('d-m-Y')}}   </h3>
+
+    <h4 style="text-align: center"> Période: {{ id.name }}</h4>
+    <br>
+    <table class="produit" style="vertical-align: top; width: 100%;">
+        <thead style="text-align: center">
+        <tr>
+            <th style="border-bottom: 1px solid #dee2e6; width: 40%;" class="text-center"><strong>Nom et prénom</strong></th>
+            <th style="border-bottom: 1px solid #dee2e6" class="text-center"><strong>classe </strong></th>
+            <th style="border-bottom: 1px solid #dee2e6; width: 50%" class="text-center"><strong>Matiére</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for absencestudent in absencestudents %}
+            {% for  absent in absencestudent.student %}
+
+                <tr class="gradeX">
+
+                    <td style="width: 30%; text-align: center">{{ absent.firstname }} {{ absent.lastname }}</td>
+                    <td style="width: 30%; text-align: center">{{ nameclasse.name }}</td>
+                    <td style="width: 30%; text-align: center">{{ absencestudent.matierepresence }}</td>
+
+
+                </tr>
+            {% endfor %}
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</page>
+</body>
+</html>
+

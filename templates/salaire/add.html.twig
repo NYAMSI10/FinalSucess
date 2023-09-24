@@ -1,0 +1,251 @@
+{% extends('ComponentDashbord/index.html.twig') %}
+
+{% block content %}
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>FORMULAIRE DE PAIEMENT DU SALAIRE DE Mr/Mme
+                <strong>{{ nameuser.firstname }} {{ nameuser.lastname }} </strong></h2>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-content">
+                    <form action="{{ path('addsalaire',{'id':nameuser.id  }) }}" method="POST"
+                          enctype="multipart/form-data">
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label"> Période de cours <span
+                                                style="color: red">*</span></label>
+                                    <select class="select2 form-control" name="periode" onchange="choixperiode()" id="listeperiode"required>
+
+                                        <option value=" ">Choisir une période de cours</option>
+                                        {% for periode in periodes %}
+                                            <option value=" {{ periode.id }}">{{ periode.name }}</option>
+
+                                        {% endfor %}
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Mois de paiement <span style="color: red">*</span></label>
+                                    <select class=" form-control" name="mois" onchange="choixmois()" id="listemois"
+                                            required>
+                                        <option>Choisir le mois de paiement</option>
+                                        {% for annee in annees %}
+                                            <option value="{{ annee }}">{{ annee }}</option>
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Nombres d'heures effectuées <span
+                                                style="color: red">*</span></label>
+                                    <input type="number" class="form-control" name="nbrework"
+                                           min="0" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Prix par heure <span style="color: red">*</span></label>
+                                    <input type="number" class="form-control prixheure" name="mtfrais"
+                                           required>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Montant total des cours effectués <span
+                                                style="color: red">*</span></label>
+                                    <input type="number" class="form-control" name="mttotal"
+                                           min="0" required>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Amicale <span style="color: red">*</span></label>
+                                    <input type="number" class="form-control" name="amicale"
+                                           value="2000" required
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <fieldset>
+                            <legend><h3 class="ibox-title">COTISATION </h3></legend>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Montant à cotiser <span style="color: red">*</span>
+                                        </label>
+                                        <input type="number" class="form-control " name="cotisation"
+                                               value="{{ cotisation }}" required>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Montant du Bénéficiaire de la cotisation <span
+                                                    style="color: red">*</span></label>
+                                        <input type="number" class="form-control monInputClass" name="benefcotistion"
+                                               required>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend><h3 class="ibox-title">PRIMES </h3></legend>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Selctionnez une ou plusieurs primes</label>
+                                        <select class="select2 form-control" name="prime[]" multiple="multiple" >
+                                            {% for prime in primes %}
+                                                <option value="{{ prime.id }}">{{ prime.name }}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend><h3 class="ibox-title">EVÉNEMENTS </h3></legend>
+                            <div class="row">
+
+                                {% for even in evens %}
+                                    {% if (even.somme != null) and (datetoday < even.end|date('Y-m-d')) %}
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+
+                                                <label class="form-label">{{ even.name }} <span
+                                                            style="color: red">*</span></label>
+                                                <input type="number" class="form-control"
+                                                       value="{{ even.somme }}" disabled>
+                                                <input type="hidden" class="form-control" name="events[]"
+                                                       value="{{ even.somme }}" >
+                                                <input type="hidden" class="form-control" name="nameevents[]"
+                                                       value="{{ even.name }}" >
+
+                                            </div>
+
+                                        </div>
+                                    {% elseif (even.somme == null) and (datetoday < even.end|date('Y-m-d')) %}
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+
+                                                <label class="form-label">{{ even.name }} <span
+                                                            style="color: red">*</span></label>
+                                                <input type="number" class="form-control" name="eventsvolontaire[]"
+                                                       required>
+                                                <input type="hidden" class="form-control" name="nameeventsvolontaire[]"
+                                                       value="{{ even.name }}">
+
+                                            </div>
+
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+                        </fieldset>
+
+
+                        <br>
+                        <div class="form-group" style="margin-right: 47%;">
+                            <button class="btn btn-md btn-primary pull-right" type="submit">Valider</button>
+                        </div>
+                        <br>
+                    </form>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function choixmois() {
+            // Récupérer l'élément de la liste déroulante et l'élément où afficher le prix
+            var mois = document.getElementById("listemois").value;
+            var idteacher = {{ nameuser.id }};
+
+            $.ajax({
+                url: "{{ path('choixmois') }}",
+                method: "POST",
+                data: {idteacher: idteacher, mois: mois},
+                success: function (response) {
+
+                    console.log(response.mois);
+                    document.querySelector(".monInputClass").value = response.mois;
+                },
+                error: function (xhr, status, error) {
+                    console.log('0');
+                    document.querySelector(".monInputClass").value = 0;
+                }
+
+            })
+
+
+        }
+
+
+        function choixperiode() {
+            // Récupérer l'élément de la liste déroulante et l'élément où afficher le prix
+            var periode = document.getElementById("listeperiode").value;
+            var idteacher = {{ nameuser.id }};
+            $.ajax({
+                url: "{{ path('periodepaiement') }}",
+                method: "POST",
+                data: {idteacher: idteacher, periode: periode},
+                success: function (response) {
+
+                    document.querySelector(".prixheure").value = response.somme;
+                },
+                error: function (xhr, status, error) {
+                    document.querySelector(".prixheure").value = 0;
+                }
+
+            })
+
+        }
+
+    </script>
+
+
+{% endblock %}

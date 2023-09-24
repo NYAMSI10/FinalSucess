@@ -1,0 +1,71 @@
+{% extends('ComponentDashbord/index.html.twig') %}
+
+{% block content %}
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Formulaire Cotisation</h2>
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-content">
+                    {{ form_start(form) }}
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_row(form.usercotisation) }}
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_row(form.somme) }}
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">Mois à bouffer
+                                    <spa style="color: red">*</spa>
+                                </label>
+                                <select class="form-control select2" name="mois">
+                                    {% for annee in annees %}
+                                        <option> 15 {{ annee }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group" style="margin-right: 44%;">
+                        <button class="btn btn-md btn-primary pull-right" type="submit">Valider</button>
+                    </div>
+
+
+                    {{ form_end(form) }}
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}

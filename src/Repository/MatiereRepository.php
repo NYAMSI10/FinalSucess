@@ -35,7 +35,17 @@ class MatiereRepository extends ServiceEntityRepository
 //            ->getResult()
 //        ;
 //    }
+    public function MatiereByTeacher($user): array
+    {
 
+        return $this->createQueryBuilder('m')
+            ->select('m','u')
+            ->join('m.users', 'u')
+            ->andWhere('u.id = :user')
+            ->setParameter('user',$user)
+            ->getQuery()
+            ->getResult();
+    }
 //    public function findOneBySomeField($value): ?Matiere
 //    {
 //        return $this->createQueryBuilder('m')

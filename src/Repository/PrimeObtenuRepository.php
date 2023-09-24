@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\PresenceTeacher;
+use App\Entity\PrimeObtenu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PresenceTeacher>
+ * @extends ServiceEntityRepository<PrimeObtenu>
  *
- * @method PresenceTeacher|null find($id, $lockMode = null, $lockVersion = null)
- * @method PresenceTeacher|null findOneBy(array $criteria, array $orderBy = null)
- * @method PresenceTeacher[]    findAll()
- * @method PresenceTeacher[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method PrimeObtenu|null find($id, $lockMode = null, $lockVersion = null)
+ * @method PrimeObtenu|null findOneBy(array $criteria, array $orderBy = null)
+ * @method PrimeObtenu[]    findAll()
+ * @method PrimeObtenu[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PresenceTeacherRepository extends ServiceEntityRepository
+class PrimeObtenuRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PresenceTeacher::class);
+        parent::__construct($registry, PrimeObtenu::class);
     }
 
 //    /**
-//     * @return PresenceTeacher[] Returns an array of PresenceTeacher objects
+//     * @return PrimeObtenu[] Returns an array of PrimeObtenu objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class PresenceTeacherRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?PresenceTeacher
+//    public function findOneBySomeField($value): ?PrimeObtenu
 //    {
 //        return $this->createQueryBuilder('p')
 //            ->andWhere('p.exampleField = :val')

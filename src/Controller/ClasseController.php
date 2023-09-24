@@ -63,7 +63,7 @@ class ClasseController extends AbstractController
     }
 
     #[Route('/deleteclasse/{id}', name: 'deleteclasse')]
-    public function deletematiere(Classe $classe,EntityManagerInterface $manager): RedirectResponse
+    public function deleteclasse(Classe $classe,EntityManagerInterface $manager): RedirectResponse
     {
 
         $manager->remove($classe);

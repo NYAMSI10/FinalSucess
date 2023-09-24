@@ -36,6 +36,29 @@ class CotisationRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+
+public function  CotisationByTeacher($user): int
+{
+    return $this->createQueryBuilder('c')
+        ->select('SUM(c.somme)')
+        ->andWhere('c.usercotisation = :user')
+        ->setParameter('user', $user)
+        ->getQuery()
+        ->getSingleScalarResult();
+
+}
+    public function  CotisationByMontant($somme): int
+    {
+        return $this->createQueryBuilder('c')
+            ->select('SUM(c.somme)')
+            ->andWhere('c.somme = :somme')
+            ->setParameter('somme', $somme)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+    }
+
+
 //    public function findOneBySomeField($value): ?Cotisation
 //    {
 //        return $this->createQueryBuilder('c')
