@@ -10,6 +10,7 @@ use App\Repository\MatiereRepository;
 use App\Repository\PeriodeRepository;
 use App\Repository\UserRepository;
 use App\Service\FunctionService;
+use App\Service\ShowUser;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -49,7 +50,7 @@ class TeacherController extends AbstractController
                                FunctionService             $functionService,
                                ClasseRepository            $classeRepository,
                                MatiereRepository           $matiereRepository,
-                               UserRepository $userRepository): Response
+                               UserRepository              $userRepository): Response
     {
 
         $user = new User();
@@ -131,9 +132,8 @@ class TeacherController extends AbstractController
     }
 
 
-
     #[Route('/teacher/{id}', name: 'showteacher')]
-    public function allteacher(Periode $periode,PeriodeRepository $periodeRepository, UserRepository $userRepository): Response
+    public function allteacher(Periode $periode, PeriodeRepository $periodeRepository, UserRepository $userRepository): Response
     {
         $periodes = $periodeRepository->find($periode);
         //$users = $userRepository->findBy(['IsTeacher'=>true]);
@@ -148,24 +148,26 @@ class TeacherController extends AbstractController
 
 
     #[Route('/modifiez-teacher/{id}', name: 'updateteacher')]
-    public function updateteacher(User $user,
-                                  UserRepository $userRepository,
-                                  PeriodeRepository           $periodeRepository,
-                               Request                     $request,
-                               ManagerRegistry             $doctrine,
-                               UserPasswordHasherInterface $hasher,
-                               FunctionService             $functionService,
-                               ClasseRepository            $classeRepository,
-                               MatiereRepository           $matiereRepository): Response
+    public function updateteacher(User              $user,
+                                  UserRepository    $userRepository,
+                                  PeriodeRepository $periodeRepository,
+                                  Request           $request,
+                                  ManagerRegistry   $doctrine,
+                                  ShowUser          $showUser,
+                                  ClasseRepository  $classeRepository,
+                                  MatiereRepository $matiereRepository): Response
     {
 
-       $periodes = $periodeRepository->PeriodeByTeacher($user);
+        $periodes = $periodeRepository->PeriodeByTeacher($user);
 
         $users = $userRepository->find($user);
 
-        $form = $this->createForm(TeacherType::class, $users);
 
+        $form = $this->createForm(TeacherType::class, $users);
         $form->handleRequest($request);
+
+
+
 
         if ($form->isSubmitted()) {
 
@@ -174,9 +176,6 @@ class TeacherController extends AbstractController
             $periode = $form->get('userperiode')->getData();
             $classe = $form->get('userclasse')->getData();
             $matiere = $form->get('usermatiere')->getData();
-
-
-
 
 
             if (!$periode || !$classe || !$matiere) {
@@ -194,8 +193,8 @@ class TeacherController extends AbstractController
             }
 
 
-
             foreach ($periode as $value) {
+
                 $periodeid = $periodeRepository->find($value);
 
                 $users->addUserperiode($periodeid);
@@ -217,19 +216,22 @@ class TeacherController extends AbstractController
             $manager->persist($users);
             $manager->flush();
 
-            toastr()->addSuccess('Enseignant modifié');
-            return $this->redirectToRoute('allteacher');
+            //  toastr()->addSuccess('Enseignant modifié');
+            // return $this->redirectToRoute('allteacher');
         }
-         $form->remove('userperiode');
-         $form->remove('usermatiere');
-         $form->remove('userclasse');
+        $form->remove('userperiode');
+        $form->remove('usermatiere');
+        $form->remove('userclasse');
 
         return $this->render('teacher/edit.html.twig', [
             'form' => $form->createView(),
-            'periodes'=>$periodes,
+            'periodes' => $periodes,
+            'user' => $users,
+            'classes'=>$showUser->classeRestant($users),
+            'matieres'=>$showUser->matiereRestant($users),
+            'perios'=>$showUser->periodeRestant($users)
         ]);
     }
-
 
 
     #[Route('delete/{id}', name: 'deleteteacher')]

@@ -24,14 +24,16 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                {{ form_label(form.firstname) }} <spa style="color: red">*</spa>
+                                {{ form_label(form.firstname) }}
+                                <spa style="color: red">*</spa>
                                 {{ form_widget(form.firstname) }}
 
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                {{ form_label(form.lastname) }} <spa style="color: red">*</spa>
+                                {{ form_label(form.lastname) }}
+                                <spa style="color: red">*</spa>
                                 {{ form_widget(form.lastname) }}
                             </div>
                         </div>
@@ -39,13 +41,15 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                {{ form_label(form.email) }} <spa style="color: red">*</spa>
+                                {{ form_label(form.email) }}
+                                <spa style="color: red">*</spa>
                                 {{ form_widget(form.email) }}
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                {{ form_label(form.phone) }} <spa style="color: red">*</spa>
+                                {{ form_label(form.phone) }}
+                                <spa style="color: red">*</spa>
                                 {{ form_widget(form.phone) }}
                             </div>
                         </div>
@@ -53,16 +57,24 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                {{ form_label(form.quartier) }} <spa style="color: red">*</spa>
+                                {{ form_label(form.quartier) }}
+                                <spa style="color: red">*</spa>
                                 {{ form_widget(form.quartier) }}
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label class="form-label"> Role <spa style="color: red">*</spa></label>
-                                <select class="form-control select2" name="role" >
-                                    <option value="0">Enseignant</option>
-                                    <option value="1">Administrateur</option>
+                                <label class="form-label"> Classe
+                                    <spa style="color: red">*</spa>
+                                </label>
+                                <select class="form-control select2" name="classe[]" multiple="multiple">
+                                    {% for classe in user.userclasse %}
+                                        <option  selected="selected" value="{{ classe.id }}">{{ classe.name }}</option>
+                                    {% endfor %}
+                                    {% for clas in classes %}
+                                        <option value="{{ clas.id }}">{{ clas.name }}</option>
+                                    {% endfor %}
+
 
                                 </select>
                             </div>
@@ -71,22 +83,32 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label class="form-label"> Role <spa style="color: red">*</spa></label>
-                                <select class="form-control select2" name="role" >
-                                    <option value="0">Enseignant</option>
-                                    <option value="1">Administrateur</option>
+                                <label class="form-label"> Matiére
+                                    <spa style="color: red">*</spa>
+                                </label>
+                                <select class="form-control select2"  name="matiere[]" multiple="multiple">
+                                    {% for matiere in user.usermatiere %}
+                                        <option  selected="selected" value="{{ matiere.id }}">{{ matiere.name }}</option>
+                                    {% endfor %}
+                                    {% for mat in matieres %}
+                                        <option value="{{ mat.id }}">{{ mat.name }}</option>
+                                    {% endfor %}
 
                                 </select>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label class="form-label"> Pérode <spa style="color: red">*</spa></label>
+                                <label class="form-label"> Pérode
+                                    <spa style="color: red">*</spa>
+                                </label>
                                 <select class="form-control select2" name="periode[]" multiple="multiple">
-                                      {% for periode in periodes %}
-                                    <option selected="selected">{{ periode.name }}</option>
-{% endfor %}
-
+                                    {% for periode in periodes %}
+                                        <option selected="selected">{{ periode.name }}</option>
+                                    {% endfor %}
+                                    {% for perio in perios %}
+                                        <option value="{{ perio.id }}">{{ perio.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -94,13 +116,17 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                {{ form_label(form.salairesceance) }} <spa style="color: red">*</spa>
+                                {{ form_label(form.salairesceance) }}
+                                <spa style="color: red">*</spa>
                                 {{ form_widget(form.salairesceance) }}
                             </div>
-                        </div> <div class="col-lg-6">
+                        </div>
+                        <div class="col-lg-6">
                             <div class="form-group">
-                                <label class="form-label"> Role <spa style="color: red">*</spa></label>
-                                <select class="form-control select2" name="role" >
+                                <label class="form-label"> Role
+                                    <spa style="color: red">*</spa>
+                                </label>
+                                <select class="form-control select2" name="role">
                                     <option value="0">Enseignant</option>
                                     <option value="1">Administrateur</option>
 
