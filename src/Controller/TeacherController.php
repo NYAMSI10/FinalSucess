@@ -152,7 +152,7 @@ class TeacherController extends AbstractController
                                   UserRepository    $userRepository,
                                   PeriodeRepository $periodeRepository,
                                   Request           $request,
-                                  ManagerRegistry   $doctrine,
+                                  EntityManagerInterface   $manager,
                                   ShowUser          $showUser,
                                   ClasseRepository  $classeRepository,
                                   MatiereRepository $matiereRepository): Response
@@ -160,23 +160,41 @@ class TeacherController extends AbstractController
 
         $periodes = $periodeRepository->PeriodeByTeacher($user);
 
-        $users = $userRepository->find($user);
+
+        $users = $userRepository->findOneBy(['id'=>$user]);
 
 
         $form = $this->createForm(TeacherType::class, $users);
         $form->handleRequest($request);
 
 
-
-
         if ($form->isSubmitted()) {
 
-            $manager = $doctrine->getManager();
             $role = $request->get('role');
-            $periode = $form->get('userperiode')->getData();
-            $classe = $form->get('userclasse')->getData();
-            $matiere = $form->get('usermatiere')->getData();
+            $periode = $request->get('periode');
+            $classe = $request->get('classe');
+            $matiere = $request->get('matiere');
+            $usermat =$matiereRepository->MatiereByTeacher($users->getId());
+            $userperio = $periodeRepository->PeriodeByTeacher($users->getId());
+            $userclasse = $classeRepository->ClasseByStudent($users->getId());
 
+
+            foreach ($usermat as $value) {
+
+
+              $users->removeUsermatiere($value);
+
+            }
+            foreach ($userclasse as $value) {
+                $users->removeUserclasse($value);
+
+            }
+            foreach ($userperio as $value) {
+
+
+                $users->removeUserperiode($value);
+
+            }
 
             if (!$periode || !$classe || !$matiere) {
                 toastr()->addError('le champs periode ou classe ou matiére est obligatoire ');
@@ -216,8 +234,8 @@ class TeacherController extends AbstractController
             $manager->persist($users);
             $manager->flush();
 
-            //  toastr()->addSuccess('Enseignant modifié');
-            // return $this->redirectToRoute('allteacher');
+              toastr()->addSuccess('Enseignant modifié');
+             return $this->redirectToRoute('allteacher');
         }
         $form->remove('userperiode');
         $form->remove('usermatiere');
@@ -227,9 +245,9 @@ class TeacherController extends AbstractController
             'form' => $form->createView(),
             'periodes' => $periodes,
             'user' => $users,
-            'classes'=>$showUser->classeRestant($users),
-            'matieres'=>$showUser->matiereRestant($users),
-            'perios'=>$showUser->periodeRestant($users)
+            'classes' => $showUser->classeRestant($users),
+            'matieres' => $showUser->matiereRestant($users),
+            'perios' => $showUser->periodeRestant($users)
         ]);
     }
 

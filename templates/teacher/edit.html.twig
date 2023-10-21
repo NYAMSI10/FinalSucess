@@ -104,7 +104,7 @@
                                 </label>
                                 <select class="form-control select2" name="periode[]" multiple="multiple">
                                     {% for periode in periodes %}
-                                        <option selected="selected">{{ periode.name }}</option>
+                                        <option selected="selected" value="{{ periode.id }}">{{ periode.name }}</option>
                                     {% endfor %}
                                     {% for perio in perios %}
                                         <option value="{{ perio.id }}">{{ perio.name }}</option>

@@ -108,15 +108,16 @@
             });
     }
     function refuse(id) {
-        alert('Voulez-vous vraiment mettre absent cet enseignant ?')
+
+        alert('Voulez-vous vraiment refuser la presence de cet enseignant?')
+
+
         // Effectuez une requête AJAX pour supprimer l'article des favoris
         fetch('refuseteacher/' + id, {
             method: 'POST',
-
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data.message);
 
                 // Mettez à jour la liste des favoris sur la page sans rafraîchir
                 // Par exemple, supprimez l'élément de la liste avec l'ID correspondant

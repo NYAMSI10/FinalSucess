@@ -39,6 +39,7 @@ class PresenceTeacherController extends AbstractController
     #[Route('validation-presence/refuseteacher/{id}', name: 'refuseteacher')]
     public function refuse(PresenceStudent $presenceStudent, PresenceStudentRepository $presenceStudentRepository, EntityManagerInterface $em): JsonResponse
     {
+
         $user = $presenceStudentRepository->find($presenceStudent);
 
         $user->setIsAccept(false);
@@ -62,6 +63,17 @@ class PresenceTeacherController extends AbstractController
         dd($timeDifference->h);*/
 
         return $this->render('presenceteacher/listeabsent.html.twig', [
+
+            'users' => $user
+        ]);
+    }
+
+    #[Route('/vos-absence', name: 'vosabsence')]
+    public function vosabsence(PresenceStudentRepository $presenceStudentRepository): Response
+    {
+        $user = $presenceStudentRepository->findBy(['IsAccept' => 0, 'userpresence'=>$this->getUser()]);
+
+        return $this->render('presenceteacher/absence.html.twig', [
 
             'users' => $user
         ]);

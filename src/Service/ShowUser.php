@@ -8,11 +8,10 @@ use App\Repository\PeriodeRepository;
 
 class ShowUser
 {
-        public function __construct(ClasseRepository $classeRepository, MatiereRepository $matiereRepository, PeriodeRepository $periodeRepository)
+
+    public function __construct(private ClasseRepository $classeRepository,private MatiereRepository $matiereRepository, private PeriodeRepository $periodeRepository)
         {
-            $this->classeRepository = $classeRepository;
-            $this->matiereRepository = $matiereRepository;
-            $this->periodeRepository = $periodeRepository;
+
         }
 
     public  function classeRestant( $users)
@@ -25,16 +24,16 @@ class ShowUser
     }
     public  function matiereRestant( $users)
     {
-        $usermat = $this->classeRepository->ClasseByStudent($users->getId());
-        $allmat = $this->classeRepository->findAll();
+        $usermat = $this->matiereRepository->MatiereByTeacher($users->getId());
+        $allmat = $this->matiereRepository->findAll();
 
        return array_diff($allmat,$usermat);
 
     }
     public  function periodeRestant( $users)
     {
-        $userperio = $this->classeRepository->ClasseByStudent($users->getId());
-        $allperio = $this->classeRepository->findAll();
+        $userperio = $this->periodeRepository->PeriodeByTeacher($users->getId());
+        $allperio = $this->periodeRepository->findAll();
 
        return array_diff($allperio,$userperio);
 

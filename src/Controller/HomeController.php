@@ -16,9 +16,7 @@ class HomeController extends AbstractController
         return $this->render('ComponentAccueil/main.html.twig');
     }
 
-    #[IsGranted('ROLE_USER')]
     #[Route('Dashboard', name:'Dashboard')]
-
 public function dashboard(): Response
     {
         return $this->render('ComponentDashbord/home.html.twig');

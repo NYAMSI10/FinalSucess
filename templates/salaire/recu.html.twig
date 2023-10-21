@@ -158,28 +158,35 @@
         </tr>
 
         {% for prime in primes %}
-        <tr>
-            <td style="width: 40%; text-align: center">{{prime.name}}</td>
-            <td style="width: 40%; text-align: center">/</td>
-            <td style="width: 40%; text-align: center">/</td>
-            <td style="width: 40%; text-align: end">{{ prime.somme }} CFA</td>
-        </tr>
+            <tr>
+                <td style="width: 40%; text-align: center">{{ prime.name }}</td>
+                <td style="width: 40%; text-align: center">/</td>
+                <td style="width: 40%; text-align: center">/</td>
+                <td style="width: 40%; text-align: end">{{ prime.somme }} CFA</td>
+            </tr>
         {% endfor %}
         {% for event in events %}
-        <tr>
-            <td style="width: 40%; text-align: center">{{event.name}}</td>
-            <td style="width: 40%; text-align: center">/</td>
-            <td style="width: 40%; text-align: center">/</td>
-            <td style="width: 40%; text-align: end">{{ event.somme }} CFA</td>
-        </tr>
+            <tr>
+                <td style="width: 40%; text-align: center">{{ event.name }}</td>
+                <td style="width: 40%; text-align: center">/</td>
+                <td style="width: 40%; text-align: center">/</td>
+                <td style="width: 40%; text-align: end">{{ event.somme }} CFA</td>
+            </tr>
         {% endfor %}
-<br>
+        <br>
         <tr>
 
             <td class="thick-line"></td>
             <td class="thick-line"></td>
-            <td class="thick-line " style="width: 50%; text-align: center"><strong>Montant net à percevoir </strong></td>
-            <td class="thick-line " style="width: 40%; text-align: end"><strong>{{salaire.montantsalaire }} CFA </strong></td>
+            <td class="thick-line " style="width: 50%; text-align: center"><strong>Montant net à percevoir </strong>
+            </td>
+            <td class="thick-line " style="width: 40%; text-align: end">
+                {% if salaire.montantsalaire > 0 %}
+                    <strong>{{ salaire.montantsalaire }} CFA </strong>
+                {% else %}
+                    <strong style="color: red">{{ salaire.montantsalaire }} CFA </strong>
+                {% endif %}
+            </td>
         </tr>
         </tbody>
     </table>

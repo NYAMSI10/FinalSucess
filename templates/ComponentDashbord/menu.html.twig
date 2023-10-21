@@ -66,7 +66,7 @@
 
         </li>
         <li>
-            <a href=""><i class="fa fa-flask"></i> <span class="nav-label">Liste des Insolvables</span></a>
+            <a href="{{ path('insolvable') }}"><i class="fa fa-flask"></i> <span class="nav-label">Liste des Insolvables</span></a>
         </li>
         <li>
             <a href="{{ path('allprime') }}"><i class="fa fa-edit"></i> <span class="nav-label">Primes</span></a>
@@ -94,6 +94,7 @@
                         class="fa arrow"></span></a>
             <ul class="nav nav-second-level collapse">
                 <li><a href="{{ path('presenceperiode') }}"> Faire l'appel</a></li>
+                <li><a href="{{ path('showappel') }}"> Modifier l'appel</a></li>
                 <li><a href="{{ path('abscenceperiode') }}">Liste des Absences</a></li>
 
             </ul>
@@ -109,7 +110,7 @@
         </li>
 
         <li>
-            <a href=""><i class="fa fa-edit"></i> <span class="nav-label">Vos absences </span></a>
+            <a href="{{ path(('vosabsence')) }}"><i class="fa fa-edit"></i> <span class="nav-label">Vos absences </span></a>
         </li>
         <li>
             <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Sujets </span><span class="fa arrow"></span></a>

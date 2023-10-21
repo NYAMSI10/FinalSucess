@@ -77,13 +77,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?int $salairesceance = null;
 
-    #[ORM\ManyToMany(targetEntity: Periode::class, inversedBy: 'users', orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Periode::class, inversedBy: 'users' )]
     private Collection $userperiode;
 
-    #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'users', orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Classe::class, inversedBy: 'users' )]
     private Collection $userclasse;
 
-    #[ORM\ManyToMany(targetEntity: Matiere::class, inversedBy: 'users', orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Matiere::class, inversedBy: 'users' )]
     private Collection $usermatiere;
 
     #[ORM\OneToMany(mappedBy: 'userscolarite', targetEntity: Scolarite::class)]
@@ -92,16 +92,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $IsAtive = null;
 
-    #[ORM\OneToMany(mappedBy: 'usercotisation', targetEntity: Cotisation::class)]
+    #[ORM\OneToMany(mappedBy: 'usercotisation', targetEntity: Cotisation::class, cascade: ['persist','remove'])]
     private Collection $cotisations;
 
-    #[ORM\OneToMany(mappedBy: 'userpresence', targetEntity: PresenceStudent::class)]
+    #[ORM\OneToMany(mappedBy: 'userpresence', targetEntity: PresenceStudent::class,  cascade: ['remove'])]
     private Collection $presenceStudents;
 
-    #[ORM\ManyToMany(targetEntity: PresenceStudent::class, mappedBy: 'student')]
+    #[ORM\ManyToMany(targetEntity: PresenceStudent::class, mappedBy: 'student', cascade: ['remove'])]
     private Collection $absenceStudents;
 
-    #[ORM\OneToMany(mappedBy: 'usersalaire', targetEntity: Salaire::class)]
+    #[ORM\OneToMany(mappedBy: 'usersalaire', targetEntity: Salaire::class, cascade: ['persist','remove'])]
     private Collection $salaires;
 
     public function __construct()

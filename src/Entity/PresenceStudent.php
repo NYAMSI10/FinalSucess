@@ -42,7 +42,7 @@ class PresenceStudent
     #[ORM\Column(nullable: true)]
     private ?bool  $IsAccept= null;
 
-    #[ORM\ManyToOne(inversedBy: 'presenceStudents')]
+    #[ORM\ManyToOne(inversedBy: 'presenceStudents', )]
     private ?Periode $periodepresence = null;
 
     #[ORM\ManyToOne(inversedBy: 'presenceStudents')]

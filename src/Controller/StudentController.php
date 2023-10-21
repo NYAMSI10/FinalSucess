@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Classe;
 use App\Entity\Periode;
+use App\Entity\PresenceStudent;
 use App\Entity\User;
 use App\Form\StudentType;
 use App\Form\TeacherType;
 use App\Repository\ClasseRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\PeriodeRepository;
+use App\Repository\PresenceStudentRepository;
 use App\Repository\UserRepository;
 use App\Service\FunctionService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,7 +28,6 @@ class StudentController extends AbstractController
     public function index(PeriodeRepository $periodeRepository, Request $request): Response
     {
         $periode = $periodeRepository->findAll();
-
 
 
         return $this->render('student/all.html.twig', [
@@ -53,7 +54,7 @@ class StudentController extends AbstractController
                                ManagerRegistry             $doctrine,
                                UserPasswordHasherInterface $hasher,
                                FunctionService             $functionService,
-                               UserRepository $userRepository): Response
+                               UserRepository              $userRepository): Response
     {
 
         $user = new User();
@@ -68,8 +69,7 @@ class StudentController extends AbstractController
             $rame = $request->get('rame');
             $periode = $form->get('userperiode')->getData();
             $classe = $form->get('userclasse')->getData();
-            $name= $form->get('firstname')->getData();
-
+            $name = $form->get('firstname')->getData();
 
 
             // encode the plain password
@@ -89,10 +89,14 @@ class StudentController extends AbstractController
 
                 $user->setIsRame(true);
 
-            }
-;            $nom = explode(" ", $name);
+            };
+            $nom = explode(" ", $name);
             if (count($nom) >= 2) {
-                $nomConcatene = $nom[0] . "" . $nom[1]; // Concaténation des deux premiers noms
+                $nomcont = $nom[0] . "" . $nom[1]; // Concaténation des deux premiers noms
+                $user->setEmail($nomcont . '@groupesucess.com');
+            }else
+            {
+                $user->setEmail($name. '@groupesucess.com');
 
             }
             $user->setRoles(['ROLE_STUDENT']);
@@ -101,7 +105,6 @@ class StudentController extends AbstractController
             $user->setMatricule($functionService->encodematricule());
             $user->setIsTeacher(false);
             $user->setAnnee($functionService->annee());
-            $user->setEmail($nomConcatene.'@groupesucess.com');
             $user->addUserperiode($periode);
             $user->addUserclasse($classe);
 
@@ -121,15 +124,19 @@ class StudentController extends AbstractController
 
     #[Route('/modifiez-student/{id}', name: 'updatestudent')]
     public function updatestudent(
-         User $users ,PeriodeRepository           $periodeRepository,
-                                  Request                     $request,
-                                  ManagerRegistry             $doctrine,
-                                  UserPasswordHasherInterface $hasher,
-                                  FunctionService             $functionService,
-                                  UserRepository $userRepository): Response
+        User                        $users, PeriodeRepository $periodeRepository,
+        Request                     $request,
+        ManagerRegistry             $doctrine,
+        UserPasswordHasherInterface $hasher,
+        FunctionService             $functionService,
+        UserRepository              $userRepository,
+        ClasseRepository            $classeRepository,
+         ): Response
     {
 
-        $user =$userRepository->find($users);
+        $user = $userRepository->find($users);
+        $periode = $periodeRepository->findAll();
+        $classe = $classeRepository->findAll();
 
         $form = $this->createForm(StudentType::class, $user);
 
@@ -139,16 +146,9 @@ class StudentController extends AbstractController
 
             $manager = $doctrine->getManager();
             $rame = $request->get('rame');
-            $periode = $form->get('userperiode')->getData();
-            $classe = $form->get('userclasse')->getData();
-            $name= $form->get('firstname')->getData();
-
-
-
-            // encode the plain password
-            $hashedPassword = $hasher->hashPassword(
-                $user,
-                $functionService->encodepassword());
+            $periode = $periodeRepository->find($request->get('periode'));
+            $classe = $classeRepository->find($request->get('classe'));
+            $name = $form->get('firstname')->getData();
 
 
             if ($rame == 0) {
@@ -156,6 +156,17 @@ class StudentController extends AbstractController
             } else {
 
                 $user->setIsRame(true);
+
+            }
+
+            $nom = explode(" ", $name);
+
+            if (count($nom) >= 2) {
+                $nomcont = $nom[0] . "" . $nom[1]; // Concaténation des deux premiers noms
+                $user->setEmail($nomcont . '@groupesucess.com');
+            }else
+            {
+                $user->setEmail($name. '@groupesucess.com');
 
             }
 
@@ -170,16 +181,22 @@ class StudentController extends AbstractController
             return $this->redirectToRoute('allstudent');
         }
 
+             $form->remove('userclasse');
+             $form->remove('userperiode');
+
+
         return $this->render('student/edit.html.twig', [
             'form' => $form->createView(),
-            'user'=> $user
+            'user' => $user,
+            'periodes'=> $periode,
+            'classes'=>$classe
 
         ]);
     }
 
 
     #[Route('/student/periode?={periode}/classe?={classe}', name: 'showstudent')]
-    public function allstudent(Periode $periode,Classe $classe,PeriodeRepository $periodeRepository, UserRepository $userRepository,ClasseRepository $classeRepository): Response
+    public function allstudent(Periode $periode, Classe $classe, PeriodeRepository $periodeRepository, UserRepository $userRepository, ClasseRepository $classeRepository): Response
     {
         $nameclasse = $classeRepository->find($classe);
         $periode = $periodeRepository->find($periode);
@@ -198,17 +215,19 @@ class StudentController extends AbstractController
     }
 
     #[Route('student/deletestudent/{id}', name: 'deletestudent')]
-    public function deletestudent(User $user, ManagerRegistry $doctrine): JsonResponse
+    public function deletestudent(User $user, ManagerRegistry $doctrine, PresenceStudentRepository $presenceStudentRepository):Response
     {
+
 
 
         $em = $doctrine->getManager();
         $em->remove($user);
+
         $em->flush();
-        //     $this->addFlash('success', "L'annone a été suprimer avec succes");
 
+        toastr()->addSuccess('Elève supprimé');
+        return $this->redirectToRoute('allstudent');
 
-        return new JsonResponse();
     }
 
 

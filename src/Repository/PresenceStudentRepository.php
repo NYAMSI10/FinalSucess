@@ -37,7 +37,7 @@ class PresenceStudentRepository extends ServiceEntityRepository
 //    }
 
 
-        public function AbscenceByDate($clas,$perio): array
+        public function abscenceByDate($clas,$perio): array
         {
             return $this->createQueryBuilder('p')
                 ->select('p.createdAt')
@@ -46,6 +46,16 @@ class PresenceStudentRepository extends ServiceEntityRepository
                 ->setParameter('clas', $clas)
                 ->setParameter('perio', $perio)
                 ->groupBy('p.createdAt ')
+                ->getQuery()
+                ->getResult();
+
+        }
+
+        public function date(): array
+        {
+            return $this->createQueryBuilder('p')
+                ->select('p.datejours ')
+                ->groupBy('p.datejours  ')
                 ->getQuery()
                 ->getResult();
 

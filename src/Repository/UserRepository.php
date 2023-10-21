@@ -64,7 +64,34 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->join('u.userperiode', 'p')
             ->andWhere('p.id = :periode')
             ->andWhere('u.IsTeacher = 1')
+
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function studentByabsence($abscence): array
+    {
+
+        return $this->createQueryBuilder('u')
+            ->select('u','p')
+            ->join('u.absenceStudents', 'p')
+            ->andWhere('p.id = :abscence')
+            ->setParameter('abscence',$abscence)
+            ->getQuery()
+            ->getResult();
+    }
+    public function studentByperioclasse($periode, $classe): array
+    {
+
+        return $this->createQueryBuilder('u')
+            ->select('u','p','c')
+            ->join('u.userperiode', 'p')
+            ->join('u.userclasse', 'c')
+            ->andWhere('p.id = :periode')
+            ->andWhere('c.id = :classe')
+            ->andWhere('u.IsTeacher = 0')
             ->setParameter('periode',$periode)
+            ->setParameter('classe',$classe)
             ->getQuery()
             ->getResult();
     }

@@ -8,6 +8,7 @@ use App\Repository\PeriodeRepository;
 use App\Repository\PresenceStudentRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -24,26 +25,47 @@ class AbscenceController extends AbstractController
     }
 
     #[Route('/abscence/classe/{id}', name: 'abscenceclasse')]
-    public function abscenceclasse($id, ClasseRepository $classeRepository): Response
+    public function abscenceclasse($id, ClasseRepository $classeRepository, PresenceStudentRepository $presenceStudentRepository): Response
     {
         $classe = $classeRepository->findAll();
+        $abscencedate = $presenceStudentRepository->date();
 
 
         return $this->render('abscence/allclasse.html.twig', [
             'classes' => $classe,
-            'idperiode' => $id
+            'idperiode' => $id,
+            'abscencedates' => $abscencedate,
+
+        ]);
+    }
+
+    #[Route('/abscence/allstudent', name: 'abscenceallstudent')]
+    public function abscenceallstudent(PresenceStudentRepository  $presenceStudentRepository, Request $request): Response
+    {
+        $dates = $request->get('date');
+
+
+        $allabsent = $presenceStudentRepository->findBy(['datejours'=> $dates]);
+        $abscencedate = $presenceStudentRepository->date();
+
+
+        return $this->render('abscence/filtreabsent.html.twig', [
+
+            'abscencedates' => $abscencedate,
+            'allabsents' => $allabsent,
+            'date'=>$dates
+
         ]);
     }
 
     #[Route('/abscence/date/periode?={idperiode}/classe?={idclasse}', name: 'abscencedate')]
     public function abscencedate($idperiode, $idclasse, ClasseRepository $classeRepository,
-                                 PeriodeRepository $periodeRepository, PresenceStudentRepository  $presenceStudentRepository): Response
+                                 PeriodeRepository $periodeRepository, PresenceStudentRepository $presenceStudentRepository): Response
     {
         $idclas = $classeRepository->find($idclasse);
         $idperio = $periodeRepository->find($idperiode);
 
-        $abscencedate = $presenceStudentRepository->AbscenceByDate($idclas->getId(), $idperio->getId());
-
+        $abscencedate = $presenceStudentRepository->abscenceByDate($idclas->getId(), $idperio->getId());
 
 
         return $this->render('abscence/alldate.html.twig', [
@@ -52,12 +74,13 @@ class AbscenceController extends AbstractController
             'idclasse' => $idclasse
         ]);
     }
+
     #[Route('/abscence/student/periode?={idperiode}/classe?={idclasse}/jours?={createdAt}', name: 'abscenceuser')]
-    public function abscenceuser($idperiode, $idclasse,$createdAt ,ClasseRepository $classeRepository, MatiereRepository $matiereRepository,
+    public function abscenceuser($idperiode, $idclasse, $createdAt, ClasseRepository $classeRepository, MatiereRepository $matiereRepository,
                                  PeriodeRepository $periodeRepository, PresenceStudentRepository $presenceStudentRepository): Response
     {
 
-        $absencestudent = $presenceStudentRepository->findBy(['datejours'=>$createdAt,'periodepresence'=>$idperiode, 'classepresence'=>$idclasse]);
+        $absencestudent = $presenceStudentRepository->findBy(['datejours' => $createdAt, 'periodepresence' => $idperiode, 'classepresence' => $idclasse]);
 
         $nameclasse = $classeRepository->find($idclasse);
 
@@ -65,11 +88,10 @@ class AbscenceController extends AbstractController
         $userperiode = $periodeRepository->find($idperiode);
 
 
-
         return $this->render('abscence/allstudent.html.twig', [
-            'absencestudents'=>$absencestudent,
+            'absencestudents' => $absencestudent,
             'nameclasse' => $nameclasse,
-            'id'=>$userperiode,
+            'id' => $userperiode,
         ]);
     }
 }
