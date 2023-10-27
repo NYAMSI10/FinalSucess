@@ -21,28 +21,13 @@ class ScolariteRepository extends ServiceEntityRepository
         parent::__construct($registry, Scolarite::class);
     }
 
-//    /**
-//     * @return Scolarite[] Returns an array of Scolarite objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function moisPaie(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->select('s.mois')
+            ->groupBy('s.mois')
+            ->getQuery()
+            ->getResult();
 
-//    public function findOneBySomeField($value): ?Scolarite
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    }
 }

@@ -29,7 +29,6 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center">Date </th>
-                                    <th class="text-center">Nom enseignant</th>
                                     <th class="text-center">Classe</th>
                                     <th class="text-center">Période de cours</th>
                                     <th class="text-center">Horaire de Cours</th>
@@ -40,7 +39,7 @@
                                 {% for user in users %}
                                     <tr id="presence-{{ user.id }}">
                                         <td class="text-center"> {{ user.createdAt|date('d-m-Y H:i:s')}} </td>
-                                        <td class="text-center">{{ user.userpresence}} </td>
+                                 <!--       <td class="text-center">{{ user.userpresence}} </td> -->
                                         <td class="text-center">{{ user.classepresence}}</td>
                                         <td class="text-center"> {{ user.periodepresence}} </td>
                                         <td class="text-center"> {{ user.hourstart|date('H:i')}} - {{ user.hoursend|date('H:i')}}</td>
@@ -51,6 +50,14 @@
                                     </tr>
                                 {% endfor %}
                                 </tbody>
+                                <tfoot >
+                                <tr>
+                                    <td class="text-center" style="background-color: red; color: white">Nombre d'heure d'absence</td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center" style="background-color: red; color: white"> {{totalHours}}h:{{ totalMinutes }}min</td>
+                                </tr>
+                                </tfoot>
                             </table>
                         </div>
 

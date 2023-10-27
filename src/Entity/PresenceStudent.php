@@ -51,6 +51,9 @@ class PresenceStudent
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $datejours = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $IsAllpresent = null;
+
 
 
 
@@ -216,6 +219,21 @@ class PresenceStudent
         return $this;
     }
 
+    public function isIsAllpresent(): ?bool
+    {
+        return $this->IsAllpresent;
+    }
+
+    public function setIsAllpresent(?bool $IsAllpresent): static
+    {
+        $this->IsAllpresent = $IsAllpresent;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+return  $this->getHoursend().$this->getHourstart();    }
 
 
 }

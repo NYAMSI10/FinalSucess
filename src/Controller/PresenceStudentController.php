@@ -51,6 +51,7 @@ class PresenceStudentController extends AbstractController
         $userperiode = $userRepository->StudentByPeriode($idperiode);
         $userclasse = $userRepository->StudentByClasse($idclasse);
 
+
         $matiereuser = $matiereRepository->MatiereByTeacher($this->getUser());
 
         $user = $presenceStudentRepository->findBy(['datejours'=>date('Y-m-d'), 'userpresence'=>$this->getUser(), 'periodepresence'=>$idperiode , 'classepresence'=>$idclasse]);

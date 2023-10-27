@@ -64,7 +64,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->join('u.userperiode', 'p')
             ->andWhere('p.id = :periode')
             ->andWhere('u.IsTeacher = 1')
-
+            ->setParameter('periode',$periode)
             ->getQuery()
             ->getResult();
     }

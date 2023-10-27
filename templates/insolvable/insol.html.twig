@@ -4,7 +4,7 @@
 
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Liste des Élves Insolvables
+            <h2>Liste des Élèves Insolvables du mois de <strong>{{ mois }}</strong>
             </h2>
         </div>
         <div class="col-lg-2">
@@ -33,9 +33,9 @@
 
                                             <option value="">Selectionnez un mois</option>
 
-                                      {% for moise in mois  %}
-                                            <option value="{{ moise.mois }}">{{ moise.mois }}</option>
-                                       {% endfor %}
+                                            {% for moise in moispaie  %}
+                                                <option value="{{ moise.mois }}">{{ moise.mois }}</option>
+                                            {% endfor %}
 
                                         </select>
 
@@ -55,24 +55,23 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center">Nom</th>
-                                    <th class="text-center">Classe</th>
-                                    <th class="text-center">Période</th>
-                                    <th class="text-center">Montant</th>
-
+                                    <th class="text-center">Montant Restant</th>
 
                                 </tr>
                                 </thead>
                                 <tbody>
 
+                                  {% for inso in insols %}
+                                   {% if inso.reste !=0 %}
+                                <tr class="gradeX">
 
-                                            <tr class="gradeX">
+                                    <td class="text-center">{{ inso.userscolarite }}</td>
+                                    <td class="text-center" style="color: red"> {{ inso.reste }} Cfa</td>
 
-                                                <td class="text-center"></td>
-                                                <td class="text-center"></td>
-                                                <td class="text-center"></td>
-                                                <td class="text-center"></td>
 
-                                            </tr>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
 
                                 </tbody>
                             </table>

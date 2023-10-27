@@ -4,7 +4,7 @@
 
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Liste de vos éléves de <strong>{{nameclasse  }}</strong></h2>
+            <h2>Liste de vos éléves de <strong>{{ nameclasse }}</strong></h2>
 
         </div>
         <div class="col-lg-2">
@@ -84,24 +84,29 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+
+
+
                                     {% for userperiode in userperiodes %}
 
-                                    {% for userclasse in userclasses %}
+                                        {% for userclasse in userclasses %}
 
-                                    {% if userperiode.firstname == userclasse.firstname %}
-
-                                    <tr>
-                                        <td class="text-center"> {{ userperiode.firstname }}</td>
-                                        <td class="text-center">
-                                            <input type="checkbox" id="checkbox1" name="student[]"
-                                                   value="{{ userperiode.id }}">
-
-                                        </td>
+                                            {% if userperiode.firstname == userclasse.firstname %}
 
 
-                                    </tr>
-                                    {% endif %}
-                                    {% endfor %}
+
+                                                    <tr>
+                                                        <td class="text-center"> {{ userperiode.firstname }}</td>
+                                                        <td class="text-center">
+                                                            <input type="checkbox" id="checkbox1" name="student[]"
+                                                                   value="{{ userperiode.id }}">
+
+                                                        </td>
+
+                                                    </tr>
+
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endfor %}
                                     </tbody>
                                 </table>

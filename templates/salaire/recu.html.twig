@@ -133,7 +133,7 @@
             <td style="width: 40%; text-align: center">Cours Effectué</td>
             <td style="width: 40%; text-align: center">{{ salaire.nbretravail }}</td>
             <td style="width: 40%; text-align: center">{{ salaire.montantfrais }}</td>
-            <td style="width: 40%; text-align: end">{{ salaire.nbretravail * salaire.montantfrais }} CFA</td>
+            <td style="width: 40%; text-align: end">{{ ((salaire.nbretravail * salaire.montantfrais)/60) }} CFA</td>
 
         </tr>
         <tr>

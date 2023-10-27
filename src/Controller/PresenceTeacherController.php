@@ -54,13 +54,13 @@ class PresenceTeacherController extends AbstractController
     {
         $user = $presenceStudentRepository->findBy(['IsAccept' => 0]);
 
-      /*  $a = new \DateTime($user->getHourstart());
-        $b = new \DateTime($user->getHoursend());
+        /*  $a = new \DateTime($user->getHourstart());
+          $b = new \DateTime($user->getHoursend());
 
-        // Calcul de la différence d'heure
-        $timeDifference = $a->diff($b);
+          // Calcul de la différence d'heure
+          $timeDifference = $a->diff($b);
 
-        dd($timeDifference->h);*/
+          dd($timeDifference->h);*/
 
         return $this->render('presenceteacher/listeabsent.html.twig', [
 
@@ -71,11 +71,27 @@ class PresenceTeacherController extends AbstractController
     #[Route('/vos-absence', name: 'vosabsence')]
     public function vosabsence(PresenceStudentRepository $presenceStudentRepository): Response
     {
-        $user = $presenceStudentRepository->findBy(['IsAccept' => 0, 'userpresence'=>$this->getUser()]);
+        $user = $presenceStudentRepository->findBy(['IsAccept' => 0, 'userpresence' => $this->getUser()]);
+
+        $totalHours = 0;
+        $totalMinutes = 0;
+
+        foreach ($user as $value) {
+            $a = new \DateTime($value->getHourstart());
+            $b = new \DateTime($value->getHoursend());
+
+            // Calcul de la différence d'heure
+            $interval =$b->diff($a);
+            $totalHours += $interval->h; // Ajoutez les heures de l'intervalle.
+            $totalMinutes += $interval->i; // Ajoute les minutes
+
+        }
 
         return $this->render('presenceteacher/absence.html.twig', [
+            'users' => $user,
+            'totalHours'=> $totalHours,
+            'totalMinutes'=> $totalMinutes,
 
-            'users' => $user
         ]);
     }
 

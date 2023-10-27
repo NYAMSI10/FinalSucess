@@ -55,10 +55,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Nombres d'heures effectuées <span
+                                    <label class="form-label">Nombres Total de minutes effectuées <span
                                                 style="color: red">*</span></label>
                                     <input type="number" class="form-control" name="nbrework"
-                                           min="0" required>
+                                           min="0" value="{{ totalMinutes }}" required>
                                 </div>
                             </div>
 
@@ -75,15 +75,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Montant total des cours effectués <span
-                                                style="color: red">*</span></label>
-                                    <input type="number" class="form-control" name="mttotal"
-                                           min="0" required>
-                                </div>
 
-                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Amicale <span style="color: red">*</span></label>

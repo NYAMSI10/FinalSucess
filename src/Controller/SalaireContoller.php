@@ -12,6 +12,7 @@ use App\Repository\CotisationRepository;
 use App\Repository\EvenementObtenuRepository;
 use App\Repository\EvenementRepository;
 use App\Repository\PeriodeRepository;
+use App\Repository\PresenceStudentRepository;
 use App\Repository\PrimeObtenuRepository;
 use App\Repository\PrimeRepository;
 use App\Repository\SalaireRepository;
@@ -49,7 +50,7 @@ class SalaireContoller extends AbstractController
     public function formulairesalaire(
         User                 $user, UserRepository $userRepository, PrimeRepository $primeRepository,
         EvenementRepository  $evenementRepository, FunctionService $functionService,
-        CotisationRepository $cotisationRepository, PeriodeRepository $periodeRepository
+        CotisationRepository $cotisationRepository, PeriodeRepository $periodeRepository,PresenceStudentRepository $presenceStudentRepository
     ): Response
     {
         $nameuser = $userRepository->find($user);
@@ -57,7 +58,34 @@ class SalaireContoller extends AbstractController
         $even = $evenementRepository->findAll();
         $datetoday = date('Y-m-d');
         $annee = $functionService->annees();
-        $cotisation = $cotisationRepository->CotisationByTeacher($user);
+        $existcotisation = $cotisationRepository->findBy(['usercotisation'=> $user]);
+
+        if ($existcotisation)
+        {
+            $cotisation = $cotisationRepository->CotisationByTeacher($user);
+
+        }else{
+            $cotisation = 0;
+        }
+
+        $users = $presenceStudentRepository->findBy(['IsAccept' => 1, 'userpresence' => $user]);
+
+
+        $totalHours = 0;
+        $Minutes = 0;
+
+        foreach ($users as $value) {
+            $a = new \DateTime($value->getHourstart());
+            $b = new \DateTime($value->getHoursend());
+
+            // Calcul de la différence d'heure
+            $interval =$b->diff($a);
+            $totalHours += $interval->h; // Ajoutez les heures de l'intervalle.
+            $Minutes += $interval->i; // Ajoute les minutes
+
+        }
+        $totalMinutes= ($totalHours * 60) + $Minutes;
+
         $periode = $periodeRepository->PeriodeByTeacher($user);
 
         return $this->render('salaire/add.html.twig', [
@@ -68,7 +96,8 @@ class SalaireContoller extends AbstractController
             'datetoday' => $datetoday,
             'annees' => $annee,
             'cotisation' => $cotisation,
-            'periodes' => $periode
+            'periodes' => $periode,
+            'totalMinutes' => $totalMinutes
 
         ]);
     }
@@ -86,7 +115,7 @@ class SalaireContoller extends AbstractController
         $mois = $request->get('mois');
         $nbrework = $request->get('nbrework');
         $mtfrais = $request->get('mtfrais');
-        $mttotal = $request->get('mttotal');
+        $mttotal = (($nbrework*$mtfrais)/60);
         $amicale = $request->get('amicale');
         $cotisation = $request->get('cotisation');
         $benefcotistion = $request->get('benefcotistion');
@@ -223,7 +252,7 @@ class SalaireContoller extends AbstractController
         $mois = $request->get('mois');
         $nbrework = $request->get('nbrework');
         $mtfrais = $request->get('mtfrais');
-        $mttotal = $request->get('mttotal');
+        $mttotal = (($nbrework*$mtfrais)/60);
         $amicale = $request->get('amicale');
         $cotisation = $request->get('cotisation');
         $benefcotistion = $request->get('benefcotistion');

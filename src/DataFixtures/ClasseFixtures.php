@@ -15,12 +15,15 @@ class ClasseFixtures extends Fixture
         $faker = Factory::create('fr FR');
 
         $data = [
+            '6ème',
             '4ème',
             '3ème',
             '2ndA',
+            '2ndC',
             '1ère A',
             '1ère D',
             '1ère C',
+            'Tle A',
             'Tle D',
             'Tle C',
         ];

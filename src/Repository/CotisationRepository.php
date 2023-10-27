@@ -21,21 +21,6 @@ class CotisationRepository extends ServiceEntityRepository
         parent::__construct($registry, Cotisation::class);
     }
 
-//    /**
-//     * @return Cotisation[] Returns an array of Cotisation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
 
 public function  CotisationByTeacher($user): int
 {
@@ -59,13 +44,4 @@ public function  CotisationByTeacher($user): int
     }
 
 
-//    public function findOneBySomeField($value): ?Cotisation
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
