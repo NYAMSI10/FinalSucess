@@ -70,7 +70,11 @@ class ScolariteController extends AbstractController
             $historique->setHistscolarite($ref);
             $manager->persist($historique);
             $manager->flush();
-            toastr()->addSuccess('Paiement ajouté');
+            $this->addFlash(
+                'success',
+                'scolarité ajoutée'
+            );
+
             return $this->redirectToRoute('allscolarite', ['id'=>$users->getId()]);
         }
 
@@ -118,7 +122,12 @@ class ScolariteController extends AbstractController
             $historique->setHistscolarite($ref);
             $manager->persist($historique);
             $manager->flush();
-            toastr()->addSuccess('Paiement Modifié');
+
+            $this->addFlash(
+                'success',
+                'scolarité modifiée'
+            );
+
             return $this->redirectToRoute('allscolarite', ['id'=>$users->getId()]);
         }
 

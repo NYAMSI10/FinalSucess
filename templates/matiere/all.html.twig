@@ -39,7 +39,7 @@
                                 </thead>
                                 <tbody>
                                 {% for matiere in matieres %}
-                                    <tr class="gradeX">
+                                    <tr class="gradeX" id="presence-{{ matiere.id }}">
                                         <td class="text-center"> {{ matiere.createAt|date('d-m-Y') }}</td>
                                         <td class="text-center">{{ matiere.name}}
                                         </td>
@@ -48,15 +48,15 @@
                                                style="color:white;" href="{{ path('updatematiere',{'id': matiere.id}) }}"><i
                                                         class="fa fa-1x fa-pencil sr-icons"></i> </a>
                                             <a target="_blank" class=" btn btn-space btn-danger btn-xs sr-icons "
-                                               style="color:white;" href="{{ path('deletematiere',{'id': matiere.id}) }}"><i
-                                                        class="fa fa-1x fa-trash sr-icons" onclick="return confirm('Voulez-vous supprimée cette matiére?')"></i> </a>
+                                               style="color:white;" onclick="deletematiere({{ matiere.id }})"><i
+                                                        class="fa fa-1x fa-trash sr-icons" ></i> </a>
 
                                         </td>
 
                                     </tr>
                                 {% endfor %}
 
-                                </tfoot>
+                                </tbody>
                             </table>
                         </div>
 
@@ -91,4 +91,42 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function deletematiere(id) {
+
+            alert('Voulez-vous vraiment supprimer cette matiére?')
+
+
+            // Effectuez une requête AJAX pour supprimer l'article des favoris
+            fetch('deletematiere/' + id, {
+                method: 'POST',
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    // Mettez à jour la liste des favoris sur la page sans rafraîchir
+                    // Par exemple, supprimez l'élément de la liste avec l'ID correspondant
+                    const favoriteItem = document.getElementById('presence-' + id);
+                    if (favoriteItem) {
+                        favoriteItem.remove();
+                    }
+                    setTimeout(function () {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            showMethod: 'slideDown',
+                            timeOut: 4000
+                        };
+
+                        toastr.success('matiére supprimée');
+
+                    }, 1300);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
+
 {% endblock %}

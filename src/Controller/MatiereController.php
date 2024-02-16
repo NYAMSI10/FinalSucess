@@ -7,6 +7,7 @@ use App\Form\MatiereType;
 use App\Repository\MatiereRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,8 +28,10 @@ class MatiereController extends AbstractController
             $manager->persist($matieres);
             $manager->flush();
 
-            toastr()->addSuccess('Matiére ajoutée');
-
+            $this->addFlash(
+                'success',
+                'matiére ajoutée'
+            );
             return $this->redirectToRoute('allmatiere');
         }
 
@@ -51,8 +54,10 @@ class MatiereController extends AbstractController
             $manager->persist($matiere);
             $manager->flush();
 
-            toastr()->addSuccess('Matiére modifie');
-
+            $this->addFlash(
+                'success',
+                'matiére modifie'
+            );
             return $this->redirectToRoute('allmatiere');
         }
 
@@ -62,15 +67,13 @@ class MatiereController extends AbstractController
     }
 
     #[Route('/deletematiere/{id}', name: 'deletematiere')]
-    public function deletematiere(Matiere $matiere,EntityManagerInterface $manager): Response
+    public function deletematiere(Matiere $matiere,EntityManagerInterface $manager): JsonResponse
     {
 
         $manager->remove($matiere);
         $manager->flush();
 
-        toastr()->addSuccess('Matiére supprimée');
-
-        return $this->redirectToRoute('allmatiere');
+        return new JsonResponse();
     }
 
 }

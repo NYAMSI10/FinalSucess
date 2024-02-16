@@ -7,6 +7,7 @@ use App\Form\EvenementType;
 use App\Repository\EvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,8 +31,11 @@ class EvenementController extends AbstractController
             $manager->persist($events);
             $manager->flush();
 
-            toastr()->addSuccess('Evènement ajouté');
-
+           // toastr()->addSuccess('Evènement ajouté');
+            $this->addFlash(
+                'success',
+                'évènement ajouté'
+            );
             return $this->redirectToRoute('allevenement');
         }
 
@@ -55,8 +59,11 @@ class EvenementController extends AbstractController
             $manager->persist($events);
             $manager->flush();
 
-            toastr()->addSuccess('Evènement modifié');
-
+          //  toastr()->addSuccess('Evènement modifié');
+            $this->addFlash(
+                'success',
+                'évènement modifié'
+            );
             return $this->redirectToRoute('allevenement');
         }
 
@@ -66,15 +73,14 @@ class EvenementController extends AbstractController
     }
 
     #[Route('/deleteevenement/{id}', name: 'deleteevenement')]
-    public function deleteevenement(Evenement $evenement,EntityManagerInterface $manager): RedirectResponse
+    public function deleteevenement(Evenement $evenement,EntityManagerInterface $manager): JsonResponse
     {
 
         $manager->remove($evenement);
         $manager->flush();
 
-        toastr()->addSuccess('Evènement supprimé');
 
-        return $this->redirectToRoute('allevenement');
+        return new JsonResponse();
     }
 
 }

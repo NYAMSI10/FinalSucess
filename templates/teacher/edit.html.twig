@@ -114,26 +114,24 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                {{ form_label(form.salairesceance) }}
-                                <spa style="color: red">*</spa>
-                                {{ form_widget(form.salairesceance) }}
-                            </div>
-                        </div>
+
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label class="form-label"> Role
                                     <spa style="color: red">*</spa>
                                 </label>
                                 <select class="form-control select2" name="role">
-                                    <option value="0">Enseignant</option>
+                                     {% if user.roles[0]== "ROLE_TEACHER" %}
+                                    <option value="0" selected="selected">Enseignant</option>
                                     <option value="1">Administrateur</option>
+                                    {% else %}
+                                    <option value="1" selected="selected">Administrateur</option>
+                                    <option value="0">Enseignant</option>
+                                    {% endif %}
 
                                 </select>
                             </div>
                         </div>
-
                     </div>
                     <br>
                     <div class="form-group" style="margin-right: 47%;">
@@ -141,7 +139,6 @@
                     </div>
                     <br>
                 </div>
-
 
                 {{ form_end(form) }}
 

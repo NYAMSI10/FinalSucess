@@ -9,12 +9,14 @@ use App\Repository\ClasseRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\PeriodeRepository;
 use App\Repository\UserRepository;
+use App\Service\EmailService;
 use App\Service\FunctionService;
 use App\Service\ShowUser;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -50,7 +52,8 @@ class TeacherController extends AbstractController
                                FunctionService             $functionService,
                                ClasseRepository            $classeRepository,
                                MatiereRepository           $matiereRepository,
-                               UserRepository              $userRepository): Response
+                               UserRepository              $userRepository,
+                               EmailService                $emailService): Response
     {
 
         $user = new User();
@@ -66,11 +69,16 @@ class TeacherController extends AbstractController
             $periode = $form->get('userperiode')->getData();
             $classe = $form->get('userclasse')->getData();
             $matiere = $form->get('usermatiere')->getData();
-
+            $email = $form->get('email')->getData();
+            $firstname = $form->get('firstname')->getData();
+            $pass =  $functionService->encodepassword();
             $mail = $userRepository->findBy(['email' => $form->get('email')->getData()]);
 
             if ($mail) {
-                toastr()->addError('Désolé cet email existe déja ');
+                $this->addFlash(
+                    'error',
+                    'Désolé cet email existe déja '
+                );
                 return $this->render('teacher/add.html.twig', [
                     'form' => $form->createView(),
                 ]);
@@ -79,10 +87,13 @@ class TeacherController extends AbstractController
             // encode the plain password
             $hashedPassword = $hasher->hashPassword(
                 $user,
-                $functionService->encodepassword());
+                $pass);
 
             if (!$periode || !$classe || !$matiere) {
-                toastr()->addError('le champs periode ou classe ou matiére est obligatoire ');
+                $this->addFlash(
+                    'error',
+                    'le champs periode ou classe ou matiére est obligatoire'
+                );
                 return $this->render('teacher/add.html.twig', [
                     'form' => $form->createView(),
                 ]);
@@ -121,7 +132,12 @@ class TeacherController extends AbstractController
             $manager->persist($user);
             $manager->flush();
 
-            toastr()->addSuccess('Enseignant ajouté');
+          $emailService->sendEmail($email,$firstname,$pass);
+
+            $this->addFlash(
+                'success',
+                'enseignant ajouté'
+            );
             return $this->redirectToRoute('allteacher');
         }
 
@@ -148,20 +164,20 @@ class TeacherController extends AbstractController
 
 
     #[Route('/modifiez-teacher/{id}', name: 'updateteacher')]
-    public function updateteacher(User              $user,
-                                  UserRepository    $userRepository,
-                                  PeriodeRepository $periodeRepository,
-                                  Request           $request,
-                                  EntityManagerInterface   $manager,
-                                  ShowUser          $showUser,
-                                  ClasseRepository  $classeRepository,
-                                  MatiereRepository $matiereRepository): Response
+    public function updateteacher(User                   $user,
+                                  UserRepository         $userRepository,
+                                  PeriodeRepository      $periodeRepository,
+                                  Request                $request,
+                                  EntityManagerInterface $manager,
+                                  ShowUser               $showUser,
+                                  ClasseRepository       $classeRepository,
+                                  MatiereRepository      $matiereRepository): Response
     {
 
         $periodes = $periodeRepository->PeriodeByTeacher($user);
 
 
-        $users = $userRepository->findOneBy(['id'=>$user]);
+        $users = $userRepository->findOneBy(['id' => $user]);
 
 
         $form = $this->createForm(TeacherType::class, $users);
@@ -174,7 +190,7 @@ class TeacherController extends AbstractController
             $periode = $request->get('periode');
             $classe = $request->get('classe');
             $matiere = $request->get('matiere');
-            $usermat =$matiereRepository->MatiereByTeacher($users->getId());
+            $usermat = $matiereRepository->MatiereByTeacher($users->getId());
             $userperio = $periodeRepository->PeriodeByTeacher($users->getId());
             $userclasse = $classeRepository->ClasseByStudent($users->getId());
 
@@ -182,7 +198,7 @@ class TeacherController extends AbstractController
             foreach ($usermat as $value) {
 
 
-              $users->removeUsermatiere($value);
+                $users->removeUsermatiere($value);
 
             }
             foreach ($userclasse as $value) {
@@ -197,7 +213,10 @@ class TeacherController extends AbstractController
             }
 
             if (!$periode || !$classe || !$matiere) {
-                toastr()->addError('le champs periode ou classe ou matiére est obligatoire ');
+                $this->addFlash(
+                    'error',
+                    'le champs periode ou classe ou matiére est obligatoire'
+                );
                 return $this->render('teacher/add.html.twig', [
                     'form' => $form->createView(),
                 ]);
@@ -234,8 +253,11 @@ class TeacherController extends AbstractController
             $manager->persist($users);
             $manager->flush();
 
-              toastr()->addSuccess('Enseignant modifié');
-             return $this->redirectToRoute('allteacher');
+            $this->addFlash(
+                'success',
+                'enseignant modifié'
+            );
+            return $this->redirectToRoute('allteacher');
         }
         $form->remove('userperiode');
         $form->remove('usermatiere');
@@ -252,18 +274,17 @@ class TeacherController extends AbstractController
     }
 
 
-    #[Route('delete/{id}', name: 'deleteteacher')]
-    public function deleteteacher(User $user, ManagerRegistry $doctrine): Response
+    #[Route('teacher/deleteteacher/{id}', name: 'deleteteacher')]
+    public function deleteteacher(User $user, ManagerRegistry $doctrine): JsonResponse
     {
 
 
         $em = $doctrine->getManager();
         $em->remove($user);
         $em->flush();
-        //     $this->addFlash('success', "L'annone a été suprimer avec succes");
 
-        toastr()->addSuccess('Enseignant supprimé');
-        return $this->redirectToRoute('allteacher');
+        return new JsonResponse();
     }
+
 
 }

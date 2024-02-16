@@ -7,6 +7,7 @@ use App\Form\PrimeType;
 use App\Repository\PrimeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,8 +29,11 @@ class PrimeController extends AbstractController
             $manager->persist($primes);
             $manager->flush();
 
-            toastr()->addSuccess('prime ajoutée');
 
+            $this->addFlash(
+                'success',
+                'prime ajoutée'
+            );
             return $this->redirectToRoute('allprime');
         }
 
@@ -52,8 +56,11 @@ class PrimeController extends AbstractController
             $manager->persist($primes);
             $manager->flush();
 
-            toastr()->addSuccess('Prime modifiée');
 
+            $this->addFlash(
+                'success',
+                'prime modifiée'
+            );
             return $this->redirectToRoute('allprime');
         }
 
@@ -63,15 +70,14 @@ class PrimeController extends AbstractController
     }
 
     #[Route('/deleteprime/{id}', name: 'deleteprime')]
-    public function deleteprime(Prime $prime,EntityManagerInterface $manager): RedirectResponse
+    public function deleteprime(Prime $prime,EntityManagerInterface $manager): RedirectResponse|JsonResponse
     {
 
         $manager->remove($prime);
         $manager->flush();
 
-        toastr()->addSuccess('Prime supprimée');
 
-        return $this->redirectToRoute('allprime');
+        return new JsonResponse();
     }
 
 }

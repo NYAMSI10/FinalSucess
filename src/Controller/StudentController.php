@@ -78,7 +78,10 @@ class StudentController extends AbstractController
                 $functionService->encodepassword());
 
             if (!$periode || !$classe) {
-                toastr()->addError('le champs periode ou classe  est obligatoire ');
+                $this->addFlash(
+                    'error',
+                    'le champs periode ou classe ou matiére est obligatoire'
+                );
                 return $this->render('teacher/add.html.twig', [
                     'form' => $form->createView(),
                 ]);
@@ -111,7 +114,10 @@ class StudentController extends AbstractController
             $manager->persist($user);
             $manager->flush();
 
-            toastr()->addSuccess('Elève ajouté');
+            $this->addFlash(
+                'success',
+                'élève ajouté'
+            );
             return $this->redirectToRoute('allstudent');
         }
 
@@ -177,7 +183,10 @@ class StudentController extends AbstractController
             $manager->persist($user);
             $manager->flush();
 
-            toastr()->addSuccess('Elève modifié');
+            $this->addFlash(
+                'success',
+                'élève modifié'
+            );
             return $this->redirectToRoute('allstudent');
         }
 
@@ -225,7 +234,10 @@ class StudentController extends AbstractController
 
         $em->flush();
 
-        toastr()->addSuccess('Elève supprimé');
+        $this->addFlash(
+            'success',
+            'élève supprimé'
+        );
         return $this->redirectToRoute('allstudent');
 
     }

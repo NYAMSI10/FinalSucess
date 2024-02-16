@@ -41,7 +41,7 @@
                                 </thead>
                                 <tbody>
                                 {% for event in events %}
-                                    <tr class="gradeX">
+                                    <tr class="gradeX" id="presence-{{ event.id }}">
                                         <td class="text-center"> {{ event.end|date('d-m-Y') }}</td>
                                         <td class="text-center">{{ event.name }}
                                         <td class="text-center">{{ event.somme }}
@@ -58,9 +58,9 @@
                                             {% if (datetoday > event.end|date('Y-m-d') ) %}
                                                 <a target="_blank" class=" btn btn-space btn-danger btn-xs sr-icons "
                                                    style="color:white;"
-                                                   href="{{ path('deleteevenement',{'id': event.id}) }}"><i
+                                                   onclick="deleteevent({{ event.id }})"><i
                                                             class="fa fa-1x fa-trash sr-icons"
-                                                            onclick="return confirm('Voulez-vous supprimée cet évènement?')"></i>
+                                                            ></i>
                                                 </a>
                                             {% else %}
                                                 <a target="_blank" class=" btn btn-space btn-primary btn-xs sr-icons "
@@ -69,9 +69,9 @@
                                                             class="fa fa-1x fa-pencil sr-icons"></i> </a>
                                                 <a target="_blank" class=" btn btn-space btn-danger btn-xs sr-icons "
                                                    style="color:white;"
-                                                   href="{{ path('deleteevenement',{'id': event.id}) }}"><i
+                                                  onclick="deleteevent({{ event.id }})"><i
                                                             class="fa fa-1x fa-trash sr-icons"
-                                                            onclick="return confirm('Voulez-vous supprimée cet évènement?')"></i>
+                                                           ></i>
                                                 </a>
                                             {% endif %}
 
@@ -131,4 +131,42 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function deleteevent(id) {
+
+            alert('Voulez-vous vraiment supprimer cet évènement?')
+
+
+            // Effectuez une requête AJAX pour supprimer l'article des favoris
+            fetch('deleteevenement/' + id, {
+                method: 'POST',
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    // Mettez à jour la liste des favoris sur la page sans rafraîchir
+                    // Par exemple, supprimez l'élément de la liste avec l'ID correspondant
+                    const favoriteItem = document.getElementById('presence-' + id);
+                    if (favoriteItem) {
+                        favoriteItem.remove();
+                    }
+                    setTimeout(function () {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            showMethod: 'slideDown',
+                            timeOut: 4000
+                        };
+
+                        toastr.success('évènement supprimé');
+
+                    }, 1300);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
+
 {% endblock %}

@@ -27,7 +27,7 @@
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered table-hover " id="editable">
                                 <thead>
-                                <tr>
+                                <tr >
                                     <th class="text-center">Nom  </th>
                                     <th class="text-center">Prénom</th>
                                     <th class="text-center">Email</th>
@@ -40,7 +40,7 @@
                                 </thead>
                                 <tbody>
                                 {% for user in users %}
-                                    <tr class="gradeX">
+                                    <tr class="gradeX" id="presence-{{ user.id }}">
                                         <td class="text-center"> {{ user.firstname }}</td>
                                         <td class="text-center">{{ user.lastname}}</td>
                                         <td class="text-center">{{ user.email}}</td>
@@ -55,8 +55,8 @@
                                                style="color:white;" href="{{ path('updateteacher',{'id': user.id}) }}"><i
                                                         class="fa fa-1x fa-pencil sr-icons"></i> </a>
                                             <a target="_blank" class=" btn btn-space btn-danger btn-xs sr-icons "
-                                               style="color:white;" href="{{ path('deleteteacher',{'id': user.id}) }}"><i
-                                                        class="fa fa-1x fa-trash sr-icons" onclick="return confirm('Voulez-vous supprimée cet enseignant?')"></i> </a>
+                                               style="color:white;" onclick="deleteuser({{ user.id }})"><i
+                                                        class="fa fa-1x fa-trash sr-icons" ></i> </a>
 
                                         </td>
 
@@ -73,5 +73,43 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function deleteuser(id) {
+
+            alert('Voulez-vous vraiment supprimer cet enseignant?')
+
+
+            // Effectuez une requête AJAX pour supprimer l'article des favoris
+            fetch('deleteteacher/' + id, {
+                method: 'POST',
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    // Mettez à jour la liste des favoris sur la page sans rafraîchir
+                    // Par exemple, supprimez l'élément de la liste avec l'ID correspondant
+                    const favoriteItem = document.getElementById('presence-' + id);
+                    if (favoriteItem) {
+                        favoriteItem.remove();
+                    }
+                    setTimeout(function () {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            showMethod: 'slideDown',
+                            timeOut: 4000
+                        };
+
+                        toastr.success('enseignant supprimée');
+
+                    }, 1300);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
+
 
 {% endblock %}

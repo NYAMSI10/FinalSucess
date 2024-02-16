@@ -77,27 +77,29 @@
 
 
 
-    <h3 style="text-align: center"> Liste des absents  du {{ datejours|date('d-m-Y')}}   </h3>
+    <h3 style="text-align: center"> Liste de tous les absents du {{ datejours|date('d-m-Y')}}   </h3>
 
-    <h4 style="text-align: center"> Période: {{ absent.periodepresence }} / Classe:  {{ absent.classepresence }} </h4>
     <br>
     <table class="produit" style="vertical-align: top; width: 100%;">
         <thead style="text-align: center">
         <tr>
             <th style="border-bottom: 1px solid #dee2e6; width: 40%;" class="text-center"><strong>Nom et prénom</strong></th>
-            <th style="border-bottom: 1px solid #dee2e6; width: 50%" class="text-center"><strong>Matiére</strong></th>
+            <th style="border-bottom: 1px solid #dee2e6; width: 50%" class="text-center"><strong>Classe</strong></th>
+            <th style="border-bottom: 1px solid #dee2e6; width: 50%" class="text-center"><strong>Matière</strong></th>
+            <th style="border-bottom: 1px solid #dee2e6; width: 50%" class="text-center"><strong>Horaire de cours</strong></th>
+
         </tr>
         </thead>
         <tbody>
         {% for absencestudent in absencestudents %}
 
-                <tr class="gradeX">
+            <tr class="gradeX">
 
-                    <td style="width: 30%; text-align: center">{{ absencestudent.firstname }} {{ absencestudent.lastname }}</td>
-                    <td style="width: 30%; text-align: center">{{ absent.matierepresence }}</td>
+                <td style="width: 30%; text-align: center">{{ absencestudent.firstname }} {{ absencestudent.lastname }}</td>
+                <td style="width: 30%; text-align: center">{{ absent.matierepresence }}</td>
 
 
-                </tr>
+            </tr>
 
         {% endfor %}
         </tbody>

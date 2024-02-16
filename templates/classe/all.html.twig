@@ -40,7 +40,7 @@
                                 </thead>
                                 <tbody>
                                 {% for classe in classes %}
-                                    <tr class="gradeX">
+                                    <tr class="gradeX" id="presence-{{ classe.id }}">
                                         <td class="text-center"> {{ classe.createAt|date('d-m-Y') }}</td>
                                         <td class="text-center">{{ classe.name}}
                                         <td class="text-center">{{ classe.frais}}
@@ -50,8 +50,8 @@
                                                style="color:white;" href="{{ path('updateclasse',{'id': classe.id}) }}"><i
                                                         class="fa fa-1x fa-pencil sr-icons"></i> </a>
                                             <a target="_blank" class=" btn btn-space btn-danger btn-xs sr-icons "
-                                               style="color:white;" href="{{ path('deleteclasse',{'id': classe.id}) }}"><i
-                                                        class="fa fa-1x fa-trash sr-icons" onclick="return confirm('Voulez-vous supprimée cette classe?')"></i> </a>
+                                               style="color:white;" onclick="deleteclasse({{ classe.id }})"><i
+                                                        class="fa fa-1x fa-trash sr-icons" ></i> </a>
 
                                         </td>
 
@@ -99,6 +99,43 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function deleteclasse(id) {
+
+            alert('Voulez-vous vraiment supprimer cette classe?')
+
+
+            // Effectuez une requête AJAX pour supprimer l'article des favoris
+            fetch('deleteclasse/' + id, {
+                method: 'POST',
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    // Mettez à jour la liste des favoris sur la page sans rafraîchir
+                    // Par exemple, supprimez l'élément de la liste avec l'ID correspondant
+                    const favoriteItem = document.getElementById('presence-' + id);
+                    if (favoriteItem) {
+                        favoriteItem.remove();
+                    }
+                    setTimeout(function () {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            showMethod: 'slideDown',
+                            timeOut: 4000
+                        };
+
+                        toastr.success('classe supprimée');
+
+                    }, 1300);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
 {% endblock %}
 
 

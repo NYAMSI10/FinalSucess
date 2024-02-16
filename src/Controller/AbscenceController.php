@@ -40,12 +40,12 @@ class AbscenceController extends AbstractController
     }
 
     #[Route('/abscence/allstudent', name: 'abscenceallstudent')]
-    public function abscenceallstudent(PresenceStudentRepository  $presenceStudentRepository, Request $request): Response
+    public function abscenceallstudent(PresenceStudentRepository $presenceStudentRepository, Request $request): Response
     {
         $dates = $request->get('date');
 
 
-        $allabsent = $presenceStudentRepository->findBy(['datejours'=> $dates]);
+        $allabsent = $presenceStudentRepository->findBy(['datejours' => $dates]);
         $abscencedate = $presenceStudentRepository->date();
 
 
@@ -53,7 +53,7 @@ class AbscenceController extends AbstractController
 
             'abscencedates' => $abscencedate,
             'allabsents' => $allabsent,
-            'date'=>$dates
+            'date' => $dates
 
         ]);
     }
@@ -77,21 +77,22 @@ class AbscenceController extends AbstractController
 
     #[Route('/abscence/student/periode?={idperiode}/classe?={idclasse}/jours?={createdAt}', name: 'abscenceuser')]
     public function abscenceuser($idperiode, $idclasse, $createdAt, ClasseRepository $classeRepository, MatiereRepository $matiereRepository,
-                                 PeriodeRepository $periodeRepository, PresenceStudentRepository $presenceStudentRepository): Response
+                                 PeriodeRepository $periodeRepository, PresenceStudentRepository $presenceStudentRepository,UserRepository $userRepository): Response
     {
 
-        $absencestudent = $presenceStudentRepository->findBy(['datejours' => $createdAt, 'periodepresence' => $idperiode, 'classepresence' => $idclasse]);
+        $absencestudent = $presenceStudentRepository->findOneBy(['datejours' => $createdAt, 'periodepresence' => $idperiode, 'classepresence' => $idclasse]);
 
         $nameclasse = $classeRepository->find($idclasse);
+        $a = $userRepository->studentBypresence($absencestudent->getId());
+        $b = $userRepository->studentByperioclasse($absencestudent->getPeriodepresence()->getId(),$absencestudent->getClassepresence()->getId());
 
 
-        $userperiode = $periodeRepository->find($idperiode);
 
 
         return $this->render('abscence/allstudent.html.twig', [
-            'absencestudents' => $absencestudent,
+            'absencestudents' => array_diff($b,$a),
             'nameclasse' => $nameclasse,
-            'id' => $userperiode,
+            'absent'=>$absencestudent
         ]);
     }
 }

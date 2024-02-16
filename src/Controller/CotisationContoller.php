@@ -47,7 +47,12 @@ class CotisationContoller extends AbstractController
             $existecotisation = $cotisationRepository->findBy(['moisbouffe'=>$mois, 'somme'=>$somme]);
             if ($existecotisation)
             {
-                toastr()->addError('Un enseignant bouffe déjà à ce mois et avec ce montant');
+               // toastr()->addError('Un enseignant bouffe déjà à ce mois et avec ce montant');
+                $this->addFlash(
+                    'error',
+                    'Un enseignant bouffe déjà à ce mois et avec ce montant'
+                );
+
                 return $this->redirectToRoute('addcotisation');
             }
             $cotisation->setMoisbouffe($mois);
@@ -55,8 +60,11 @@ class CotisationContoller extends AbstractController
             $em->persist($cotisation);
             $em->flush();
 
-            toastr()->addSuccess('Cotisation ajoutée');
-
+           // toastr()->addSuccess('Cotisation ajoutée');
+            $this->addFlash(
+                'success',
+                'cotisation ajoutée'
+            );
             return $this->redirectToRoute('allcotisation');
 
         }
@@ -98,8 +106,10 @@ class CotisationContoller extends AbstractController
             $em->persist($cotisations);
             $em->flush();
 
-            toastr()->addSuccess('Cotisation modifiée');
-
+            $this->addFlash(
+                'success',
+                'cotisation motifiée'
+            );
             return $this->redirectToRoute('allcotisation');
 
         } else {
@@ -123,8 +133,10 @@ class CotisationContoller extends AbstractController
         $manager->remove($cotisation);
         $manager->flush();
 
-        toastr()->addSuccess('Cotisation supprimée');
-
+        $this->addFlash(
+            'success',
+            'cotisation supprimée'
+        );
         return $this->redirectToRoute('allcotisation');
     }
 

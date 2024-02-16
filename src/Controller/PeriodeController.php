@@ -7,6 +7,7 @@ use App\Form\PeriodeType;
 use App\Repository\PeriodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,8 +28,11 @@ class PeriodeController extends AbstractController
              $manager->persist($periodes);
              $manager->flush();
 
-              toastr()->addSuccess('Période ajoutée');
 
+            $this->addFlash(
+                'success',
+                'période modifie'
+            );
              return $this->redirectToRoute('allperiode');
         }
 
@@ -51,8 +55,10 @@ class PeriodeController extends AbstractController
             $manager->persist($periode);
             $manager->flush();
 
-            toastr()->addSuccess('Période modifie');
-
+            $this->addFlash(
+                'success',
+                'période modifié'
+            );
             return $this->redirectToRoute('allperiode');
         }
 
@@ -61,16 +67,14 @@ class PeriodeController extends AbstractController
         ]);
     }
 
-    #[Route('/deleteperiode/{id}', name: 'deleteperiode')]
-    public function deleteperiode(Periode $periode,EntityManagerInterface $manager): Response
+    #[Route('deleteperiode/{id}', name: 'deleteperiode')]
+    public function deleteperiode(Periode $periode,EntityManagerInterface $manager): JsonResponse
     {
 
         $manager->remove($periode);
         $manager->flush();
 
-        toastr()->addSuccess('Période supprimée');
-
-        return $this->redirectToRoute('allperiode');
+        return new JsonResponse();
     }
 
 

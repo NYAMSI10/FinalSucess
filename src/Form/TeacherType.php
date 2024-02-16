@@ -58,20 +58,7 @@ class TeacherType extends AbstractType
 
                 ],
             ])
-            ->add('salairesceance', IntegerType::class, [
-                'label' => 'Salaire par sceance',
-                'attr' => [
-                    'placeholder' => "1000,20000,...",
-                    'class' => "form-control",
-                    'min' => 0,
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Champ obligatoire',
-                    ]),
 
-                ],
-            ])
             ->add('quartier', TextType::class, [
                 'label' => 'Quartier',
 

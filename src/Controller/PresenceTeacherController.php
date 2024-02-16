@@ -54,14 +54,6 @@ class PresenceTeacherController extends AbstractController
     {
         $user = $presenceStudentRepository->findBy(['IsAccept' => 0]);
 
-        /*  $a = new \DateTime($user->getHourstart());
-          $b = new \DateTime($user->getHoursend());
-
-          // Calcul de la différence d'heure
-          $timeDifference = $a->diff($b);
-
-          dd($timeDifference->h);*/
-
         return $this->render('presenceteacher/listeabsent.html.twig', [
 
             'users' => $user
@@ -81,7 +73,7 @@ class PresenceTeacherController extends AbstractController
             $b = new \DateTime($value->getHoursend());
 
             // Calcul de la différence d'heure
-            $interval =$b->diff($a);
+            $interval = $b->diff($a);
             $totalHours += $interval->h; // Ajoutez les heures de l'intervalle.
             $totalMinutes += $interval->i; // Ajoute les minutes
 
@@ -89,8 +81,8 @@ class PresenceTeacherController extends AbstractController
 
         return $this->render('presenceteacher/absence.html.twig', [
             'users' => $user,
-            'totalHours'=> $totalHours,
-            'totalMinutes'=> $totalMinutes,
+            'totalHours' => $totalHours,
+            'totalMinutes' => $totalMinutes,
 
         ]);
     }

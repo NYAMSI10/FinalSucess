@@ -109,7 +109,7 @@ class SalaireContoller extends AbstractController
         EvenementRepository  $evenementRepository, FunctionService $functionService,
         CotisationRepository $cotisationRepository, Request $request, EntityManagerInterface $manager,
         PeriodeRepository    $periodeRepository, SalaireRepository $salaireRepository
-    ): Response
+    ): Response|JsonResponse
     {
         $periode = $request->get('periode');
         $mois = $request->get('mois');
@@ -131,15 +131,23 @@ class SalaireContoller extends AbstractController
         $s2 = 0;
         $p = 0;
 
-
         $salaire = new Salaire();
         $existe = $salaireRepository->findBy(['usersalaire' => $users->getId(), 'mois' => $mois, 'periodesalaire' => $periode]);
 
         if ($existe) {
-            toastr()->addError('Ce Paiement existe déjà!');
+        //    toastr()->addError('Ce Paiement existe déjà!');
             return $this->redirectToRoute('formsalaire', ['id' => $users->getId()]);
         }
 
+        if (($periode ==0) || ($mois==0) )
+        {
+            $this->addFlash(
+                'error',
+                'champs periode ou mois de paiement obligatoire'
+            );
+            return $this->redirectToRoute('formsalaire', ['id' => $users->getId()]);
+
+        }
 
         $salaire->setPeriodesalaire($idperiode);
         $salaire->setUsersalaire($user);
@@ -213,7 +221,11 @@ class SalaireContoller extends AbstractController
         $manager->flush();
 
 
-        toastr()->addSuccess('Paiement ajouté');
+        $this->addFlash(
+            'success',
+            'salaire ajouté'
+        );
+
         return $this->redirectToRoute('allsalaire', ['id' => $users->getId()]);
 
     }
@@ -327,7 +339,10 @@ class SalaireContoller extends AbstractController
         $manager->flush();
 
 
-        toastr()->addSuccess('Paiement modifié');
+        $this->addFlash(
+            'success',
+            'salaire modifié'
+        );
         return $this->redirectToRoute('allsalaire', ['id' => $user->getId()]);
 
     }

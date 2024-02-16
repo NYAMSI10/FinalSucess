@@ -27,7 +27,7 @@
                                                 style="color: red">*</span></label>
                                     <select class="select2 form-control" name="periode" onchange="choixperiode()" id="listeperiode" required>
 
-                                        <option value="0">Choisir une période de cours</option>
+                                        <option value=" ">Choisir une période de cours</option>
                                         {% for periode in periodes %}
                                             <option value=" {{ periode.id }}">{{ periode.name }}</option>
 
@@ -41,7 +41,7 @@
                                     <label class="form-label">Mois de paiement <span style="color: red">*</span></label>
                                     <select class=" form-control" name="mois" onchange="choixmois()" id="listemois"
                                             required>
-                                        <option value="0">Choisir le mois de paiement</option>
+                                        <option>Choisir le mois de paiement</option>
                                         {% for annee in annees %}
                                             <option value="{{ annee }}">{{ annee }}</option>
                                         {% endfor %}

@@ -1,0 +1,14 @@
+{# templates/emails/signup.html.twig #}
+<h1>Welcome {{ email.toName }}!</h1>
+
+ <h2>Mr/Mme {{ firstname }}</h2>
+<p>
+    Nous avons le plaisir de vous informer que votre compte enseignant a été crée:
+</p>
+<p> Email <code>{{ emails}}</code></p>
+<p> password <code>{{ password}}</code></p>
+
+<br>
+
+<img alt="image" class="img-circle" src="{{ asset('asset/img/logo.jpg') }}" width="50"
+     height="50"/>

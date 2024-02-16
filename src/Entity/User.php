@@ -74,8 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $updatedAt = null;
 
 
-    #[ORM\Column(nullable: true)]
-    private ?int $salairesceance = null;
+
 
     #[ORM\ManyToMany(targetEntity: Periode::class, inversedBy: 'users' )]
     private Collection $userperiode;
@@ -349,19 +348,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = new \DateTime();
     }
 
-
-
-    public function getSalairesceance(): ?int
-    {
-        return $this->salairesceance;
-    }
-
-    public function setSalairesceance(?int $salairesceance): static
-    {
-        $this->salairesceance = $salairesceance;
-
-        return $this;
-    }
 
 
     /**

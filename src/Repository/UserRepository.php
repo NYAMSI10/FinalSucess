@@ -69,7 +69,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
-    public function studentByabsence($abscence): array
+    public function studentBypresence($abscence): array
     {
 
         return $this->createQueryBuilder('u')

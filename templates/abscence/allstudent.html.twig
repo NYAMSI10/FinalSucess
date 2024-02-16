@@ -37,18 +37,18 @@
                                 </thead>
                                 <tbody>
                                 {% for absencestudent in absencestudents %}
-                                    {% for  absent in absencestudent.student %}
+
 
                                         <tr class="gradeX">
 
-                                            <td class="text-center">{{ absencestudent.createdAt|date('d-m-Y H:i:s') }}</td>
-                                            <td class="text-center">{{ absent.firstname }} {{ absent.lastname }}</td>
-                                            <td class="text-center">{{ id.name }}</td>
-                                            <td class="text-center">{{ absencestudent.matierepresence }}</td>
+                                            <td class="text-center">{{ absent.createdAt|date('d-m-Y H:i:s') }}</td>
+                                            <td class="text-center">{{ absencestudent.firstname }} {{ absencestudent.lastname }}</td>
+                                            <td class="text-center">{{ absent.periodepresence}}</td>
+                                            <td class="text-center">{{ absent.matierepresence }}</td>
 
 
                                         </tr>
-                                    {% endfor %}
+
 
                                 {% endfor %}
 
