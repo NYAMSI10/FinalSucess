@@ -36,7 +36,7 @@ class TeacherFixtures extends Fixture
                 $user,
                 '123456',
             );
-            $name = $faker->firstName(gender: null );
+            $name = $faker->firstName(gender: null);
             $user
                 ->setFirstname($name)
                 ->setLastname($faker->lastName)
@@ -47,15 +47,13 @@ class TeacherFixtures extends Fixture
                 ->setIsTeacher(false)
                 ->setMatricule($this->functionService->encodematricule())
                 ->setQuartier($faker->city)
-                ->setPhone($faker->unixTime($max = 'now') )
+                ->setPhone($faker->unixTime($max = 'now'))
                 ->addUserperiode($faker->randomElement($periode))
                 ->addUserclasse($faker->randomElement($classe))
-                ->setIsRame($faker->randomElement(['true','false']));
+                ->setIsRame($faker->randomElement(['true', 'false']));
 
             $manager->persist($user);
             $manager->flush();
         }
-
-
     }
 }

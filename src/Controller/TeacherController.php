@@ -22,7 +22,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class TeacherController extends AbstractController
 {
     #[Route('/teacher', name: 'allteacher')]
@@ -43,15 +45,16 @@ class TeacherController extends AbstractController
     }
 
     #[Route('/addteacher', name: 'addteacher')]
-    public function addteacher(PeriodeRepository           $periodeRepository,
-                               Request                     $request,
-                               ManagerRegistry             $doctrine,
-                               UserPasswordHasherInterface $hasher,
-                               FunctionService             $functionService,
-                               ClasseRepository            $classeRepository,
-                               MatiereRepository           $matiereRepository,
-                               UserRepository              $userRepository): Response
-    {
+    public function addteacher(
+        PeriodeRepository           $periodeRepository,
+        Request                     $request,
+        ManagerRegistry             $doctrine,
+        UserPasswordHasherInterface $hasher,
+        FunctionService             $functionService,
+        ClasseRepository            $classeRepository,
+        MatiereRepository           $matiereRepository,
+        UserRepository              $userRepository
+    ): Response {
 
         $user = new User();
 
@@ -79,7 +82,8 @@ class TeacherController extends AbstractController
             // encode the plain password
             $hashedPassword = $hasher->hashPassword(
                 $user,
-                $functionService->encodepassword());
+                $functionService->encodepassword()
+            );
 
             if (!$periode || !$classe || !$matiere) {
                 toastr()->addError('le champs periode ou classe ou matiére est obligatoire ');
@@ -92,7 +96,6 @@ class TeacherController extends AbstractController
             } else {
 
                 $user->setRoles(['ROLE_ADMIN']);
-
             }
 
             $user->setPassword($hashedPassword);
@@ -103,18 +106,15 @@ class TeacherController extends AbstractController
                 $periodeid = $periodeRepository->find($value);
 
                 $user->addUserperiode($periodeid);
-
             }
             foreach ($matiere as $value) {
                 $matiereid = $matiereRepository->find($value);
 
                 $user->addUsermatiere($matiereid);
-
             }
             foreach ($classe as $value) {
                 $classeid = $classeRepository->find($value);
                 $user->addUserclasse($classeid);
-
             }
 
 
@@ -148,20 +148,21 @@ class TeacherController extends AbstractController
 
 
     #[Route('/modifiez-teacher/{id}', name: 'updateteacher')]
-    public function updateteacher(User              $user,
-                                  UserRepository    $userRepository,
-                                  PeriodeRepository $periodeRepository,
-                                  Request           $request,
-                                  EntityManagerInterface   $manager,
-                                  ShowUser          $showUser,
-                                  ClasseRepository  $classeRepository,
-                                  MatiereRepository $matiereRepository): Response
-    {
+    public function updateteacher(
+        User              $user,
+        UserRepository    $userRepository,
+        PeriodeRepository $periodeRepository,
+        Request           $request,
+        EntityManagerInterface   $manager,
+        ShowUser          $showUser,
+        ClasseRepository  $classeRepository,
+        MatiereRepository $matiereRepository
+    ): Response {
 
         $periodes = $periodeRepository->PeriodeByTeacher($user);
 
 
-        $users = $userRepository->findOneBy(['id'=>$user]);
+        $users = $userRepository->findOneBy(['id' => $user]);
 
 
         $form = $this->createForm(TeacherType::class, $users);
@@ -174,7 +175,7 @@ class TeacherController extends AbstractController
             $periode = $request->get('periode');
             $classe = $request->get('classe');
             $matiere = $request->get('matiere');
-            $usermat =$matiereRepository->MatiereByTeacher($users->getId());
+            $usermat = $matiereRepository->MatiereByTeacher($users->getId());
             $userperio = $periodeRepository->PeriodeByTeacher($users->getId());
             $userclasse = $classeRepository->ClasseByStudent($users->getId());
 
@@ -182,18 +183,15 @@ class TeacherController extends AbstractController
             foreach ($usermat as $value) {
 
 
-              $users->removeUsermatiere($value);
-
+                $users->removeUsermatiere($value);
             }
             foreach ($userclasse as $value) {
                 $users->removeUserclasse($value);
-
             }
             foreach ($userperio as $value) {
 
 
                 $users->removeUserperiode($value);
-
             }
 
             if (!$periode || !$classe || !$matiere) {
@@ -207,7 +205,6 @@ class TeacherController extends AbstractController
             } else {
 
                 $users->setRoles(['ROLE_ADMIN']);
-
             }
 
 
@@ -216,26 +213,23 @@ class TeacherController extends AbstractController
                 $periodeid = $periodeRepository->find($value);
 
                 $users->addUserperiode($periodeid);
-
             }
             foreach ($matiere as $value) {
                 $matiereid = $matiereRepository->find($value);
 
                 $users->addUsermatiere($matiereid);
-
             }
             foreach ($classe as $value) {
                 $classeid = $classeRepository->find($value);
                 $users->addUserclasse($classeid);
-
             }
 
 
             $manager->persist($users);
             $manager->flush();
 
-              toastr()->addSuccess('Enseignant modifié');
-             return $this->redirectToRoute('allteacher');
+            toastr()->addSuccess('Enseignant modifié');
+            return $this->redirectToRoute('allteacher');
         }
         $form->remove('userperiode');
         $form->remove('usermatiere');
@@ -265,5 +259,4 @@ class TeacherController extends AbstractController
         toastr()->addSuccess('Enseignant supprimé');
         return $this->redirectToRoute('allteacher');
     }
-
 }

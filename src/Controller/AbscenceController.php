@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Security("is_granted('ROLE_ADMIN') and is_granted('ROLE_TEACHER')")
+ */
 class AbscenceController extends AbstractController
 {
     #[Route('/Abscence/student', name: 'abscenceperiode')]
@@ -45,7 +48,7 @@ class AbscenceController extends AbstractController
         $dates = $request->get('date');
 
 
-        $allabsent = $presenceStudentRepository->findBy(['datejours'=> $dates]);
+        $allabsent = $presenceStudentRepository->findBy(['datejours' => $dates]);
         $abscencedate = $presenceStudentRepository->date();
 
 
@@ -53,15 +56,19 @@ class AbscenceController extends AbstractController
 
             'abscencedates' => $abscencedate,
             'allabsents' => $allabsent,
-            'date'=>$dates
+            'date' => $dates
 
         ]);
     }
 
     #[Route('/abscence/date/periode?={idperiode}/classe?={idclasse}', name: 'abscencedate')]
-    public function abscencedate($idperiode, $idclasse, ClasseRepository $classeRepository,
-                                 PeriodeRepository $periodeRepository, PresenceStudentRepository $presenceStudentRepository): Response
-    {
+    public function abscencedate(
+        $idperiode,
+        $idclasse,
+        ClasseRepository $classeRepository,
+        PeriodeRepository $periodeRepository,
+        PresenceStudentRepository $presenceStudentRepository
+    ): Response {
         $idclas = $classeRepository->find($idclasse);
         $idperio = $periodeRepository->find($idperiode);
 
@@ -76,9 +83,15 @@ class AbscenceController extends AbstractController
     }
 
     #[Route('/abscence/student/periode?={idperiode}/classe?={idclasse}/jours?={createdAt}', name: 'abscenceuser')]
-    public function abscenceuser($idperiode, $idclasse, $createdAt, ClasseRepository $classeRepository, MatiereRepository $matiereRepository,
-                                 PeriodeRepository $periodeRepository, PresenceStudentRepository $presenceStudentRepository): Response
-    {
+    public function abscenceuser(
+        $idperiode,
+        $idclasse,
+        $createdAt,
+        ClasseRepository $classeRepository,
+        MatiereRepository $matiereRepository,
+        PeriodeRepository $periodeRepository,
+        PresenceStudentRepository $presenceStudentRepository
+    ): Response {
 
         $absencestudent = $presenceStudentRepository->findBy(['datejours' => $createdAt, 'periodepresence' => $idperiode, 'classepresence' => $idclasse]);
 

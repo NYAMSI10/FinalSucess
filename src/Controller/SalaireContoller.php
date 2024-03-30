@@ -27,7 +27,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class SalaireContoller extends AbstractController
 {
     #[Route('/salaire/{id}', name: 'allsalaire')]
@@ -48,23 +50,25 @@ class SalaireContoller extends AbstractController
 
     #[Route('/salaire/formulaire/{id}', name: 'formsalaire')]
     public function formulairesalaire(
-        User                 $user, UserRepository $userRepository, PrimeRepository $primeRepository,
-        EvenementRepository  $evenementRepository, FunctionService $functionService,
-        CotisationRepository $cotisationRepository, PeriodeRepository $periodeRepository,PresenceStudentRepository $presenceStudentRepository
-    ): Response
-    {
+        User                 $user,
+        UserRepository $userRepository,
+        PrimeRepository $primeRepository,
+        EvenementRepository  $evenementRepository,
+        FunctionService $functionService,
+        CotisationRepository $cotisationRepository,
+        PeriodeRepository $periodeRepository,
+        PresenceStudentRepository $presenceStudentRepository
+    ): Response {
         $nameuser = $userRepository->find($user);
         $prime = $primeRepository->findAll();
         $even = $evenementRepository->findAll();
         $datetoday = date('Y-m-d');
         $annee = $functionService->annees();
-        $existcotisation = $cotisationRepository->findBy(['usercotisation'=> $user]);
+        $existcotisation = $cotisationRepository->findBy(['usercotisation' => $user]);
 
-        if ($existcotisation)
-        {
+        if ($existcotisation) {
             $cotisation = $cotisationRepository->CotisationByTeacher($user);
-
-        }else{
+        } else {
             $cotisation = 0;
         }
 
@@ -79,12 +83,12 @@ class SalaireContoller extends AbstractController
             $b = new \DateTime($value->getHoursend());
 
             // Calcul de la différence d'heure
-            $interval =$b->diff($a);
+            $interval = $b->diff($a);
             $totalHours += $interval->h; // Ajoutez les heures de l'intervalle.
             $Minutes += $interval->i; // Ajoute les minutes
 
         }
-        $totalMinutes= ($totalHours * 60) + $Minutes;
+        $totalMinutes = ($totalHours * 60) + $Minutes;
 
         $periode = $periodeRepository->PeriodeByTeacher($user);
 
@@ -105,17 +109,22 @@ class SalaireContoller extends AbstractController
 
     #[Route('/salaire/validation/{id}', name: 'addsalaire')]
     public function addsalaire(
-        User                 $user, UserRepository $userRepository, PrimeRepository $primeRepository,
-        EvenementRepository  $evenementRepository, FunctionService $functionService,
-        CotisationRepository $cotisationRepository, Request $request, EntityManagerInterface $manager,
-        PeriodeRepository    $periodeRepository, SalaireRepository $salaireRepository
-    ): Response
-    {
+        User                 $user,
+        UserRepository $userRepository,
+        PrimeRepository $primeRepository,
+        EvenementRepository  $evenementRepository,
+        FunctionService $functionService,
+        CotisationRepository $cotisationRepository,
+        Request $request,
+        EntityManagerInterface $manager,
+        PeriodeRepository    $periodeRepository,
+        SalaireRepository $salaireRepository
+    ): Response {
         $periode = $request->get('periode');
         $mois = $request->get('mois');
         $nbrework = $request->get('nbrework');
         $mtfrais = $request->get('mtfrais');
-        $mttotal = (($nbrework*$mtfrais)/60);
+        $mttotal = (($nbrework * $mtfrais) / 60);
         $amicale = $request->get('amicale');
         $cotisation = $request->get('cotisation');
         $benefcotistion = $request->get('benefcotistion');
@@ -169,7 +178,6 @@ class SalaireContoller extends AbstractController
                 $primeobtenu->setSalaireprimeobtenu($idsalaire);
                 $manager->persist($primeobtenu);
                 $manager->flush();
-
             }
         }
 
@@ -185,7 +193,6 @@ class SalaireContoller extends AbstractController
                 $manager->persist($evenobtenu);
                 $manager->flush();
             }
-
         }
 
         if ($nameeventsvolontaire) {
@@ -200,7 +207,6 @@ class SalaireContoller extends AbstractController
                 $manager->persist($evenobtenu);
                 $manager->flush();
             }
-
         }
 
         $T = ($mttotal + $p + $benefcotistion) - ($amicale + $cotisation + $s1 + $s2);
@@ -215,44 +221,59 @@ class SalaireContoller extends AbstractController
 
         toastr()->addSuccess('Paiement ajouté');
         return $this->redirectToRoute('allsalaire', ['id' => $users->getId()]);
-
     }
 
 
     #[Route('/detailsalaire/{id}', name: 'detailsalaire')]
-    public function detailsalaire(Salaire  $salaire, UserRepository $userRepository, SalaireRepository $salaireRepository
-        , FunctionService    $functionService, PeriodeRepository $periodeRepository, PrimeObtenuRepository $primeObtenuRepository,
-                                  EvenementObtenuRepository $evenementObtenuRepository, PrimeRepository $primeRepository): Response
-    {
+    public function detailsalaire(
+        Salaire  $salaire,
+        UserRepository $userRepository,
+        SalaireRepository $salaireRepository,
+        FunctionService    $functionService,
+        PeriodeRepository $periodeRepository,
+        PrimeObtenuRepository $primeObtenuRepository,
+        EvenementObtenuRepository $evenementObtenuRepository,
+        PrimeRepository $primeRepository
+    ): Response {
         return $this->extracted($salaireRepository, $salaire, $userRepository, $periodeRepository, $functionService, $primeObtenuRepository, $evenementObtenuRepository, $primeRepository);
     }
 
- #[Route('salaire/deletesalaire/{id}', name: 'deletesalaire')]
-    public function deletesalaire(Salaire     $salaire, UserRepository $userRepository, SalaireRepository $salaireRepository
-        ,  PeriodeRepository $periodeRepository, PrimeObtenuRepository $primeObtenuRepository,
-                                  EvenementObtenuRepository $evenementObtenuRepository, EntityManagerInterface $em): JsonResponse
-    {
+    #[Route('salaire/deletesalaire/{id}', name: 'deletesalaire')]
+    public function deletesalaire(
+        Salaire     $salaire,
+        UserRepository $userRepository,
+        SalaireRepository $salaireRepository,
+        PeriodeRepository $periodeRepository,
+        PrimeObtenuRepository $primeObtenuRepository,
+        EvenementObtenuRepository $evenementObtenuRepository,
+        EntityManagerInterface $em
+    ): JsonResponse {
 
-           $em->remove($salaire);
-           $em->flush();
+        $em->remove($salaire);
+        $em->flush();
 
-          return new JsonResponse();
+        return new JsonResponse();
     }
 
 
     #[Route('/salaire/update/{id}', name: 'updatesalaire')]
     public function updatesalaire(
-        Salaire               $salaires, UserRepository $userRepository, PrimeRepository $primeRepository,
+        Salaire               $salaires,
+        UserRepository $userRepository,
+        PrimeRepository $primeRepository,
         PrimeObtenuRepository $primeObtenuRepository,
-        CotisationRepository  $cotisationRepository, Request $request, EntityManagerInterface $manager,
-        PeriodeRepository     $periodeRepository, SalaireRepository $salaireRepository, EvenementObtenuRepository $evenementObtenuRepository
-    ): Response
-    {
+        CotisationRepository  $cotisationRepository,
+        Request $request,
+        EntityManagerInterface $manager,
+        PeriodeRepository     $periodeRepository,
+        SalaireRepository $salaireRepository,
+        EvenementObtenuRepository $evenementObtenuRepository
+    ): Response {
         $periode = $request->get('periode');
         $mois = $request->get('mois');
         $nbrework = $request->get('nbrework');
         $mtfrais = $request->get('mtfrais');
-        $mttotal = (($nbrework*$mtfrais)/60);
+        $mttotal = (($nbrework * $mtfrais) / 60);
         $amicale = $request->get('amicale');
         $cotisation = $request->get('cotisation');
         $benefcotistion = $request->get('benefcotistion');
@@ -280,8 +301,8 @@ class SalaireContoller extends AbstractController
         $salaire->setCotisation($cotisation);
         $salaire->setBenefcotisation($benefcotistion);
 
-          $manager->persist($salaire);
-          $manager->flush();
+        $manager->persist($salaire);
+        $manager->flush();
 
         foreach ($primeobtenu as $item) {
             $manager->remove($item);
@@ -301,7 +322,6 @@ class SalaireContoller extends AbstractController
                 $primeobtenu->setSalaireprimeobtenu($salaires);
                 $manager->persist($primeobtenu);
                 $manager->flush();
-
             }
         }
 
@@ -329,7 +349,6 @@ class SalaireContoller extends AbstractController
 
         toastr()->addSuccess('Paiement modifié');
         return $this->redirectToRoute('allsalaire', ['id' => $user->getId()]);
-
     }
 
     #[Route('/choixmois', name: 'choixmois')]
@@ -348,9 +367,9 @@ class SalaireContoller extends AbstractController
     }
 
     #[Route('/periodepaiement', name: 'periodepaiement')]
-    public function periodepaiement(Request $request,SalaireRepository $salaireRepository): JsonResponse
+    public function periodepaiement(Request $request, SalaireRepository $salaireRepository): JsonResponse
     {
-        $periode= $request->request->get('periode');
+        $periode = $request->request->get('periode');
         $id = $request->request->getInt('idteacher');
 
         $somme = $salaireRepository->findOneBy(['periodesalaire' => $periode, 'usersalaire' => $id]);
@@ -396,15 +415,18 @@ class SalaireContoller extends AbstractController
 
 
     #[Route('/recusalaire/{id}', name: 'recusalaire')]
-    public function recusalaire( Salaire               $salaires, UserRepository $userRepository,
-                                   PrimeObtenuRepository $primeObtenuRepository,
-                                   SalaireRepository $salaireRepository, EvenementObtenuRepository $evenementObtenuRepository): Response
-    {
+    public function recusalaire(
+        Salaire               $salaires,
+        UserRepository $userRepository,
+        PrimeObtenuRepository $primeObtenuRepository,
+        SalaireRepository $salaireRepository,
+        EvenementObtenuRepository $evenementObtenuRepository
+    ): Response {
 
-       $salaire = $salaireRepository->find($salaires);
-       $prime = $primeObtenuRepository->findBy(['salaireprimeobtenu'=>$salaires]);
-       $events = $evenementObtenuRepository->findBy(['salaireevenobtenu'=>$salaires]);
-       $nameuser = $userRepository->find($salaire->getUsersalaire());
+        $salaire = $salaireRepository->find($salaires);
+        $prime = $primeObtenuRepository->findBy(['salaireprimeobtenu' => $salaires]);
+        $events = $evenementObtenuRepository->findBy(['salaireevenobtenu' => $salaires]);
+        $nameuser = $userRepository->find($salaire->getUsersalaire());
         $pdfoptions = new Options();
 
         $pdfoptions->setIsRemoteEnabled(true);
@@ -434,7 +456,7 @@ class SalaireContoller extends AbstractController
         $dompdf->render();
 
         // On génère un nom de fichier
-        $fichier = 'Bulletin-de-paie'. '.pdf';
+        $fichier = 'Bulletin-de-paie' . '.pdf';
 
         // On envoie le PDF au navigateur
         $dompdf->stream($fichier, [
@@ -443,7 +465,5 @@ class SalaireContoller extends AbstractController
 
 
         return new Response();
-
     }
-
 }

@@ -19,7 +19,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class ScolariteController extends AbstractController
 {
     #[Route('/scolarite/{id}', name: 'allscolarite')]
@@ -39,9 +41,15 @@ class ScolariteController extends AbstractController
 
 
     #[Route('/addscolairte/{id}', name: 'addscolarite')]
-    public function addscolarite( User $user,Request $request, EntityManagerInterface $manager, FunctionService $functionService,
-         UserRepository $userRepository, ClasseRepository $classeRepository, ScolariteRepository $scolariteRepository): Response
-    {
+    public function addscolarite(
+        User $user,
+        Request $request,
+        EntityManagerInterface $manager,
+        FunctionService $functionService,
+        UserRepository $userRepository,
+        ClasseRepository $classeRepository,
+        ScolariteRepository $scolariteRepository
+    ): Response {
         $historique = new Historique();
         $scolarite = new Scolarite();
         $annee = date('Y');
@@ -64,21 +72,21 @@ class ScolariteController extends AbstractController
             $manager->persist($scolarite);
             $manager->flush();
 
-             $ref =  $scolariteRepository->findOneBy(['ref'=>$encoderef]);
+            $ref =  $scolariteRepository->findOneBy(['ref' => $encoderef]);
             $historique->setSomme($avance);
             $historique->setMois($mois);
             $historique->setHistscolarite($ref);
             $manager->persist($historique);
             $manager->flush();
             toastr()->addSuccess('Paiement ajouté');
-            return $this->redirectToRoute('allscolarite', ['id'=>$users->getId()]);
+            return $this->redirectToRoute('allscolarite', ['id' => $users->getId()]);
         }
 
         $annee = $functionService->mois();
         return $this->render('scolarite/add.html.twig', [
             'form' => $form->createView(),
-            'annees' =>$annee,
-            'user' =>$users,
+            'annees' => $annee,
+            'user' => $users,
             'montants' => $montant,
 
 
@@ -88,10 +96,16 @@ class ScolariteController extends AbstractController
 
 
 
-   #[Route('/updatescolairte/{id}', name: 'updatescolarite')]
-    public function updatescolarite( Scolarite $scolarite,Request $request, EntityManagerInterface $manager, FunctionService $functionService,
-         UserRepository $userRepository, ClasseRepository $classeRepository, ScolariteRepository $scolariteRepository): Response
-    {
+    #[Route('/updatescolairte/{id}', name: 'updatescolarite')]
+    public function updatescolarite(
+        Scolarite $scolarite,
+        Request $request,
+        EntityManagerInterface $manager,
+        FunctionService $functionService,
+        UserRepository $userRepository,
+        ClasseRepository $classeRepository,
+        ScolariteRepository $scolariteRepository
+    ): Response {
         $historique = new Historique();
         $scolarite = $scolariteRepository->find($scolarite);
         $form = $this->createForm(ScolariteType::class, $scolarite);
@@ -111,7 +125,7 @@ class ScolariteController extends AbstractController
             $manager->persist($scolarite);
             $manager->flush();
 
-             $ref =  $scolariteRepository->findOneBy(['ref'=>$encoderef]);
+            $ref =  $scolariteRepository->findOneBy(['ref' => $encoderef]);
 
             $historique->setSomme($avance);
             $historique->setMois($mois);
@@ -119,7 +133,7 @@ class ScolariteController extends AbstractController
             $manager->persist($historique);
             $manager->flush();
             toastr()->addSuccess('Paiement Modifié');
-            return $this->redirectToRoute('allscolarite', ['id'=>$users->getId()]);
+            return $this->redirectToRoute('allscolarite', ['id' => $users->getId()]);
         }
 
         $annee = $functionService->mois();
@@ -127,8 +141,8 @@ class ScolariteController extends AbstractController
 
         return $this->render('scolarite/edit.html.twig', [
             'form' => $form->createView(),
-            'annees' =>$annee,
-            'scolarite' =>$scolarite,
+            'annees' => $annee,
+            'scolarite' => $scolarite,
             'montants' => $montant,
 
 
@@ -138,11 +152,15 @@ class ScolariteController extends AbstractController
 
 
     #[Route('/historique-de-paiement/{id}', name: 'historyscolarite')]
-    public function history(Scolarite $scolarite, ScolariteRepository $scolariteRepository, ClasseRepository $classeRepository, UserRepository $userRepository,
-                            HistoriqueRepository $historiqueRepository): Response
-    {
+    public function history(
+        Scolarite $scolarite,
+        ScolariteRepository $scolariteRepository,
+        ClasseRepository $classeRepository,
+        UserRepository $userRepository,
+        HistoriqueRepository $historiqueRepository
+    ): Response {
         $scolarites = $scolariteRepository->find($scolarite);
-$histories = $historiqueRepository->findBy(['histscolarite'=>$scolarite]);
+        $histories = $historiqueRepository->findBy(['histscolarite' => $scolarite]);
         $nameuser = $userRepository->find($scolarites->getUserscolarite());
 
         return $this->render('scolarite/history.html.twig', [
@@ -154,12 +172,17 @@ $histories = $historiqueRepository->findBy(['histscolarite'=>$scolarite]);
     }
 
     #[Route('/deletescolarite/{id}', name: 'deletescolarite')]
-    public function deletescolarite(Scolarite $scolarite, ScolariteRepository $scolariteRepository, ClasseRepository $classeRepository, UserRepository $userRepository,
-                            HistoriqueRepository $historiqueRepository,EntityManagerInterface $manager): Response
-    {
+    public function deletescolarite(
+        Scolarite $scolarite,
+        ScolariteRepository $scolariteRepository,
+        ClasseRepository $classeRepository,
+        UserRepository $userRepository,
+        HistoriqueRepository $historiqueRepository,
+        EntityManagerInterface $manager
+    ): Response {
 
         $scolarites = $scolariteRepository->find($scolarite);
-        $histories = $historiqueRepository->findBy(['histscolarite'=>$scolarite]);
+        $histories = $historiqueRepository->findBy(['histscolarite' => $scolarite]);
         $nameuser = $userRepository->find($scolarites->getUserscolarite());
 
         $manager->remove($scolarite);
@@ -169,12 +192,17 @@ $histories = $historiqueRepository->findBy(['histscolarite'=>$scolarite]);
     }
 
     #[Route('/recuscolarite/{id}', name: 'recuscolarite')]
-    public function recuscolarite(Scolarite $scolarite, ScolariteRepository $scolariteRepository, ClasseRepository $classeRepository, UserRepository $userRepository,
-                                  HistoriqueRepository $historiqueRepository,PeriodeRepository $periodeRepository): Response
-    {
+    public function recuscolarite(
+        Scolarite $scolarite,
+        ScolariteRepository $scolariteRepository,
+        ClasseRepository $classeRepository,
+        UserRepository $userRepository,
+        HistoriqueRepository $historiqueRepository,
+        PeriodeRepository $periodeRepository
+    ): Response {
 
         $scolarites = $scolariteRepository->find($scolarite);
-        $histories = $historiqueRepository->findBy(['histscolarite'=>$scolarite]);
+        $histories = $historiqueRepository->findBy(['histscolarite' => $scolarite]);
         $nameuser = $userRepository->find($scolarites->getUserscolarite());
         $classe = $classeRepository->ClasseByStudent($nameuser->getId());
         $periode = $periodeRepository->PeriodeByTeacher($nameuser->getId());
@@ -210,7 +238,7 @@ $histories = $historiqueRepository->findBy(['histscolarite'=>$scolarite]);
         $dompdf->render();
 
         // On génère un nom de fichier
-        $fichier = 'recupaiement'. '.pdf';
+        $fichier = 'recupaiement' . '.pdf';
 
         // On envoie le PDF au navigateur
         $dompdf->stream($fichier, [
@@ -219,7 +247,5 @@ $histories = $historiqueRepository->findBy(['histscolarite'=>$scolarite]);
 
 
         return new Response();
-
     }
-
 }

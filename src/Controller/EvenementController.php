@@ -11,11 +11,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class EvenementController extends AbstractController
 {
     #[Route('/evenement', name: 'allevenement')]
-    public function index(EvenementRepository $evenementRepository,Request $request, EntityManagerInterface $manager): Response
+    public function index(EvenementRepository $evenementRepository, Request $request, EntityManagerInterface $manager): Response
     {
         $event = $evenementRepository->findAll();
         $events = new Evenement();
@@ -25,8 +27,7 @@ class EvenementController extends AbstractController
         $form = $this->createForm(EvenementType::class, $events);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $manager->persist($events);
             $manager->flush();
 
@@ -35,23 +36,22 @@ class EvenementController extends AbstractController
             return $this->redirectToRoute('allevenement');
         }
 
-        return $this->render('evenement/all.html.twig',[
-            'events'=>$event,
-            'datetoday'=>$datetoday,
-            'form'=>$form->createView(),
+        return $this->render('evenement/all.html.twig', [
+            'events' => $event,
+            'datetoday' => $datetoday,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/modifiez-evenement/{id}', name: 'updateevenement')]
-    public function updateevenement(Evenement $evenement,EvenementRepository $evenementRepository,Request $request, EntityManagerInterface $manager): Response
+    public function updateevenement(Evenement $evenement, EvenementRepository $evenementRepository, Request $request, EntityManagerInterface $manager): Response
     {
         $events = $evenementRepository->find($evenement);
 
         $form = $this->createForm(EvenementType::class, $events);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $manager->persist($events);
             $manager->flush();
 
@@ -60,13 +60,13 @@ class EvenementController extends AbstractController
             return $this->redirectToRoute('allevenement');
         }
 
-        return $this->render('evenement/edit.html.twig',[
-            'form'=>$form->createView(),
+        return $this->render('evenement/edit.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/deleteevenement/{id}', name: 'deleteevenement')]
-    public function deleteevenement(Evenement $evenement,EntityManagerInterface $manager): RedirectResponse
+    public function deleteevenement(Evenement $evenement, EntityManagerInterface $manager): RedirectResponse
     {
 
         $manager->remove($evenement);
@@ -76,5 +76,4 @@ class EvenementController extends AbstractController
 
         return $this->redirectToRoute('allevenement');
     }
-
 }

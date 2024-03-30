@@ -1,130 +1,180 @@
 <div class="sidebar-collapse">
-    <ul class="nav metismenu" id="side-menu">
-        <li class="nav-header">
-            <div class="dropdown profile-element"> <span>
+	<ul class="nav metismenu" id="side-menu">
+		<li class="nav-header">
+			<div class="dropdown profile-element">
+				<span>
 
-                        <img alt="image" class="img-circle" src="{{ asset('asset/img/logo.jpg') }}" width="50"
-                             height="50"/>
-
-
+					<img alt="image" class="img-circle" src="{{ asset('asset/img/logo.jpg') }}" width="50" height="50"/>
 
 
-                             </span>
-                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong
-                                            class="font-bold">{{ app.user }}</strong>
-                             </span> <span class="text-muted text-xs block"> {% if is_granted('ROLE_TEACHER') %}
-                                        Enseignant
-                                    {% elseif is_granted('ROLE_ADMIN') %}
-                                        Administrateur
-                                    {% elseif is_granted('ROLE_STUDENT') %}
-                                        Élève
-                                    {% endif %}
-                                    <b class="caret"></b></span> </span>
-                </a>
-                <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                    <li><a href="">Profil</a></li>
+				</span>
+				<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+					<span class="clear">
+						<span class="block m-t-xs">
+							<strong class="font-bold">{{ app.user }}</strong>
+						</span>
+						<span class="text-muted text-xs block">
+							{% if is_granted('ROLE_TEACHER') %}
+								Enseignant
+							{% elseif is_granted('ROLE_ADMIN') %}
+								Administrateur
+							{% elseif is_granted('ROLE_STUDENT') %}
+								Élève
+							{% endif %}
+							<b class="caret"></b>
+						</span>
+					</span>
+				</a>
+				<ul class="dropdown-menu animated fadeInRight m-t-xs">
+					<li>
+						<a href="">Profil</a>
+					</li>
 
-                    <li class="divider"></li>
-                    <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
-                </ul>
-            </div>
-            <div class="logo-element">
-                IN+
-            </div>
-        </li>
-        <li class="active">
-            <a href="{{ path('Dashboard') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Tableau de bord</span> <span
-                        class="fa arrow"></span></a>
-            <ul class="nav nav-second-level">
-                <li><a href="{{ path('Dashboard') }}">Vue global</a></li>
+					<li class="divider"></li>
+					<li>
+						<a href="{{ path('app_logout') }}">Se déconnecter</a>
+					</li>
+				</ul>
+			</div>
+			<div class="logo-element">
+				GS+
+			</div>
+		</li>
+		<li id="dashboard">
+			<a href="{{ path('Dashboard') }}">
+				<i class="fa fa-th-large"></i>
+				<span class="nav-label">Tableau de bord</span>
+			</a>
+		</li>
+		{% if is_granted('ROLE_ADMIN') %}
+			<li id="periode">
+				<a href="{{ path('allperiode') }}">
+					<i class="fa fa-diamond"></i>
+					<span class="nav-label">Période</span>
+				</a>
+			</li>
+			<li>
+				<a href="{{ path('allmatiere') }}">
+					<i class="fa fa-diamond"></i>
+					<span class="nav-label">Matiéres</span>
+				</a>
+			</li>
+			<li>
+				<a href="{{ path('allclasse') }}">
+					<i class="fa fa-bar-chart-o"></i>
+					<span class="nav-label">Classes</span>
+				</a>
 
-            </ul>
-        </li>
-        <li>
-            <a href=""><i class="fa fa-diamond"></i> <span class="nav-label">Compte Utilisateur</span></a>
-        </li>
-        <li>
-            <a href="{{ path('allperiode') }}"><i class="fa fa-diamond"></i> <span class="nav-label">Période</span></a>
-        </li>
-        <li>
-            <a href="{{ path('allmatiere') }}"><i class="fa fa-diamond"></i> <span class="nav-label">Matiéres</span></a>
-        </li>
-        <li>
-            <a href="{{ path('allclasse') }}"><i class="fa fa-bar-chart-o"></i> <span
-                        class="nav-label">Classes</span></a>
+			</li>
+			<li>
+				<a href="{{ path('allteacher') }}">
+					<i class="fa fa-envelope"></i>
+					<span class="nav-label">Enseignants</span>
+				</a>
 
-        </li>
-        <li>
-            <a href="{{ path('allteacher') }}"><i class="fa fa-envelope"></i> <span class="nav-label">Enseignants</span>
-            </a>
+			</li>
+			<li>
+				<a href="{{ path('allstudent') }}">
+					<i class="fa fa-envelope"></i>
+					<span class="nav-label">Elèves
+					</span>
+				</a>
 
-        </li>
-        <li>
-            <a href="{{ path('allstudent') }}"><i class="fa fa-envelope"></i> <span class="nav-label">Elèves </span>
-            </a>
+			</li>
+			<li>
+				<a href="{{ path('insolvable') }}">
+					<i class="fa fa-flask"></i>
+					<span class="nav-label">Liste des Insolvables</span>
+				</a>
+			</li>
 
-        </li>
-        <li>
-            <a href="{{ path('insolvable') }}"><i class="fa fa-flask"></i> <span class="nav-label">Liste des Insolvables</span></a>
-        </li>
-        <li>
-            <a href="{{ path('allprime') }}"><i class="fa fa-edit"></i> <span class="nav-label">Primes</span></a>
+			<li>
+				<a href="{{ path('allprime') }}">
+					<i class="fa fa-edit"></i>
+					<span class="nav-label">Primes</span>
+				</a>
 
-        </li>
-        <li>
-            <a href="{{ path('allevenement') }}"><i class="fa fa-edit"></i> <span
-                        class="nav-label">Evénèments </span></a>
+			</li>
+			<li>
+				<a href="{{ path('allevenement') }}">
+					<i class="fa fa-edit"></i>
+					<span class="nav-label">Evénèments
+					</span>
+				</a>
 
-        </li>
-
-        <li>
-            <a href="{{ path('allbulletinpaie') }}"><i class="fa fa-edit"></i> <span
-                        class="nav-label">Mes bulletins de paie </span></a>
-
-        </li>
-        <li>
-            <a href="{{ path('myrecu') }}"><i class="fa fa-edit"></i> <span
-                        class="nav-label">Mes reçus de paiement </span></a>
-
-        </li>
-
-        <li>
-            <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Discipline </span><span
-                        class="fa arrow"></span></a>
-            <ul class="nav nav-second-level collapse">
-                <li><a href="{{ path('presenceperiode') }}"> Faire l'appel</a></li>
-                <li><a href="{{ path('showappel') }}"> Modifier l'appel</a></li>
-                <li><a href="{{ path('abscenceperiode') }}">Liste des Absences</a></li>
-
-            </ul>
-        </li>
-        <li>
-            <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Présence enseignant </span><span
-                        class="fa arrow"></span></a>
-            <ul class="nav nav-second-level collapse">
-                <li><a href="{{ path('validationteacher') }}"> Validation</a></li>
-                <li><a href="{{ path('absenceteacher') }}">Liste des Absences</a></li>
-
-            </ul>
-        </li>
-
-        <li>
-            <a href="{{ path(('vosabsence')) }}"><i class="fa fa-edit"></i> <span class="nav-label">Vos absences </span></a>
-        </li>
-        <li>
-            <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Sujets </span><span class="fa arrow"></span></a>
-            <ul class="nav nav-second-level collapse">
-                <li><a href=""> Envoyé sujet</a></li>
-                <li><a href="">Tous sujets</a></li>
-                <li><a href="">Mes sujets</a></li>
+			</li>
 
 
-            </ul>
-        </li>
-        <li>
-            <a href="{{ path('allcotisation') }}"><i class="fa fa-edit"></i> <span class="nav-label">Cotisations </span></a>
-        </li>
-    </ul>
+			<li>
+				<a href="#">
+					<i class="fa fa-edit"></i>
+					<span class="nav-label">Présence enseignant
+					</span>
+					<span class="fa arrow"></span>
+				</a>
+				<ul class="nav nav-second-level collapse">
+					<li>
+						<a href="{{ path('validationteacher') }}">
+							Validation</a>
+					</li>
+					<li>
+						<a href="{{ path('absenceteacher') }}">Liste des Absences</a>
+					</li>
+
+				</ul>
+			</li>
+			<li>
+				<a href="{{ path('allcotisation') }}">
+					<i class="fa fa-edit"></i>
+					<span class="nav-label">Cotisations
+					</span>
+				</a>
+			</li>
+		{% endif %}
+
+
+		<li>
+			<a href="{{ path('allbulletinpaie') }}">
+				<i class="fa fa-edit"></i>
+				<span class="nav-label">Mes bulletins de paie
+				</span>
+			</a>
+
+		</li>
+
+		<li>
+			<a href="#">
+				<i class="fa fa-edit"></i>
+				<span class="nav-label">Discipline
+				</span>
+				<span class="fa arrow"></span>
+			</a>
+			<ul class="nav nav-second-level collapse">
+				<li>
+					<a href="{{ path('presenceperiode') }}">
+						Faire l'appel</a>
+				</li>
+				<li>
+					<a href="{{ path('showappel') }}">
+						Modifier l'appel</a>
+				</li>
+				{% if is_granted('ROLE_ADMIN') %}
+					<li>
+						<a href="{{ path('abscenceperiode') }}">Liste des Absences</a>
+					</li>
+				{% endif %}
+			</ul>
+		</li>
+
+		<li>
+			<a href="{{ path(('vosabsence')) }}">
+				<i class="fa fa-edit"></i>
+				<span class="nav-label">Vos absences
+				</span>
+			</a>
+		</li>
+
+
+	</ul>
 
 </div>

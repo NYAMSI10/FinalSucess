@@ -11,13 +11,21 @@ use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class PdfController extends AbstractController
 {
     #[Route('/pdfabscence/periode?={idperiode}/classe?={idclasse}/jours?={createdAt}', name: 'pdfabscence')]
-    public function pdfabscence($idperiode, $idclasse, $createdAt, ClasseRepository $classeRepository, MatiereRepository $matiereRepository,
-                                PeriodeRepository $periodeRepository, PresenceStudentRepository $presenceStudentRepository): Response
-    {
+    public function pdfabscence(
+        $idperiode,
+        $idclasse,
+        $createdAt,
+        ClasseRepository $classeRepository,
+        MatiereRepository $matiereRepository,
+        PeriodeRepository $periodeRepository,
+        PresenceStudentRepository $presenceStudentRepository
+    ): Response {
 
         $absencestudent = $presenceStudentRepository->findBy(['datejours' => $createdAt, 'periodepresence' => $idperiode, 'classepresence' => $idclasse]);
 
@@ -55,7 +63,7 @@ class PdfController extends AbstractController
         $dompdf->render();
 
         // On génère un nom de fichier
-        $fichier = 'Liste-des-absents-du-'. $createdAt . '.pdf';
+        $fichier = 'Liste-des-absents-du-' . $createdAt . '.pdf';
 
         // On envoie le PDF au navigateur
         $dompdf->stream($fichier, [

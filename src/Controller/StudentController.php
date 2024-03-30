@@ -21,7 +21,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class StudentController extends AbstractController
 {
     #[Route('/student', name: 'allstudent')]
@@ -49,13 +51,11 @@ class StudentController extends AbstractController
 
 
     #[Route('/addstudent', name: 'addstudent')]
-    public function addstudent(PeriodeRepository           $periodeRepository,
-                               Request                     $request,
-                               ManagerRegistry             $doctrine,
-                               UserPasswordHasherInterface $hasher,
-                               FunctionService             $functionService,
-                               UserRepository              $userRepository): Response
-    {
+    public function addstudent(
+        Request                     $request,
+        ManagerRegistry             $doctrine,
+        FunctionService             $functionService,
+    ): Response {
 
         $user = new User();
 
@@ -69,13 +69,8 @@ class StudentController extends AbstractController
             $rame = $request->get('rame');
             $periode = $form->get('userperiode')->getData();
             $classe = $form->get('userclasse')->getData();
-            $name = $form->get('firstname')->getData();
 
 
-            // encode the plain password
-            $hashedPassword = $hasher->hashPassword(
-                $user,
-                $functionService->encodepassword());
 
             if (!$periode || !$classe) {
                 toastr()->addError('le champs periode ou classe  est obligatoire ');
@@ -88,20 +83,10 @@ class StudentController extends AbstractController
             } else {
 
                 $user->setIsRame(true);
-
             };
-            $nom = explode(" ", $name);
-            if (count($nom) >= 2) {
-                $nomcont = $nom[0] . "" . $nom[1]; // Concaténation des deux premiers noms
-                $user->setEmail($nomcont . '@groupesucess.com');
-            }else
-            {
-                $user->setEmail($name. '@groupesucess.com');
 
-            }
             $user->setRoles(['ROLE_STUDENT']);
 
-            $user->setPassword($hashedPassword);
             $user->setMatricule($functionService->encodematricule());
             $user->setIsTeacher(false);
             $user->setAnnee($functionService->annee());
@@ -124,15 +109,14 @@ class StudentController extends AbstractController
 
     #[Route('/modifiez-student/{id}', name: 'updatestudent')]
     public function updatestudent(
-        User                        $users, PeriodeRepository $periodeRepository,
+        User                        $users,
+        PeriodeRepository $periodeRepository,
         Request                     $request,
         ManagerRegistry             $doctrine,
-        UserPasswordHasherInterface $hasher,
         FunctionService             $functionService,
         UserRepository              $userRepository,
         ClasseRepository            $classeRepository,
-         ): Response
-    {
+    ): Response {
 
         $user = $userRepository->find($users);
         $periode = $periodeRepository->findAll();
@@ -148,7 +132,6 @@ class StudentController extends AbstractController
             $rame = $request->get('rame');
             $periode = $periodeRepository->find($request->get('periode'));
             $classe = $classeRepository->find($request->get('classe'));
-            $name = $form->get('firstname')->getData();
 
 
             if ($rame == 0) {
@@ -156,19 +139,8 @@ class StudentController extends AbstractController
             } else {
 
                 $user->setIsRame(true);
-
             }
 
-            $nom = explode(" ", $name);
-
-            if (count($nom) >= 2) {
-                $nomcont = $nom[0] . "" . $nom[1]; // Concaténation des deux premiers noms
-                $user->setEmail($nomcont . '@groupesucess.com');
-            }else
-            {
-                $user->setEmail($name. '@groupesucess.com');
-
-            }
 
             $user->setAnnee($functionService->annee());
             $user->addUserperiode($periode);
@@ -181,15 +153,15 @@ class StudentController extends AbstractController
             return $this->redirectToRoute('allstudent');
         }
 
-             $form->remove('userclasse');
-             $form->remove('userperiode');
+        $form->remove('userclasse');
+        $form->remove('userperiode');
 
 
         return $this->render('student/edit.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
-            'periodes'=> $periode,
-            'classes'=>$classe
+            'periodes' => $periode,
+            'classes' => $classe
 
         ]);
     }
@@ -215,7 +187,7 @@ class StudentController extends AbstractController
     }
 
     #[Route('student/deletestudent/{id}', name: 'deletestudent')]
-    public function deletestudent(User $user, ManagerRegistry $doctrine, PresenceStudentRepository $presenceStudentRepository):Response
+    public function deletestudent(User $user, ManagerRegistry $doctrine, PresenceStudentRepository $presenceStudentRepository): Response
     {
 
 
@@ -227,8 +199,5 @@ class StudentController extends AbstractController
 
         toastr()->addSuccess('Elève supprimé');
         return $this->redirectToRoute('allstudent');
-
     }
-
-
 }

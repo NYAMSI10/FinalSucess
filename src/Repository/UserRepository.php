@@ -131,6 +131,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+    public function findStudentsWithoutInsolvency($mois)
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u','s')
+            ->leftJoin('u.scolarites', 's')
+            ->andWhere('s.id IS NULL')
+            ->andWhere('u.IsTeacher = 0')
+            ->setParameter('classe',$classe)
+            ->getQuery()
+            ->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?User
 //    {

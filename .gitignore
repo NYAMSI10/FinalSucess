@@ -7,6 +7,7 @@
 /public/bundles/
 /var/
 /vendor/
+/ProjetBrice.session.sql
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

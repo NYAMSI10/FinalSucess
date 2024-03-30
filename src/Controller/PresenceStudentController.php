@@ -15,10 +15,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
-class PresenceStudentController extends AbstractController
+/**
+ * @Security("is_granted('ROLE_ADMIN') and is_granted('ROLE_TEACHER')")
+ */ class PresenceStudentController extends AbstractController
 {
     #[Route('/presence/student', name: 'presenceperiode')]
     public function index(PeriodeRepository $periodeRepository): Response
@@ -54,28 +54,25 @@ class PresenceStudentController extends AbstractController
 
         $matiereuser = $matiereRepository->MatiereByTeacher($this->getUser());
 
-        $user = $presenceStudentRepository->findBy(['datejours'=>date('Y-m-d'), 'userpresence'=>$this->getUser(), 'periodepresence'=>$idperiode , 'classepresence'=>$idclasse]);
+        $user = $presenceStudentRepository->findBy(['datejours' => date('Y-m-d'), 'userpresence' => $this->getUser(), 'periodepresence' => $idperiode, 'classepresence' => $idclasse]);
 
-        if ($user)
-        {
+        if ($user) {
             toastr()->addError('Vous avez déjà fait l\'appel dans cette classe pour cette période');
-            return $this->redirectToRoute('presenceclasse',['id'=>$idperiode]);
-
-        }else{
+            return $this->redirectToRoute('presenceclasse', ['id' => $idperiode]);
+        } else {
             return $this->render('presencestudent/allstudent.html.twig', [
                 'userperiodes' => $userperiode,
                 'userclasses' => $userclasse,
                 'matiereusers' => $matiereuser,
                 'nameclasse' => $nameclasse,
-                'id'=>$idperiode,
-                'idclas'=>$idclasse,
+                'id' => $idperiode,
+                'idclas' => $idclasse,
             ]);
         }
-
     }
 
     #[Route('/addabscence/student', name: 'addabscence')]
-    public function addabscence(Request $request,PeriodeRepository $periodeRepository ,UserRepository $userRepository, MatiereRepository $matiereRepository, ClasseRepository $classeRepository,EntityManagerInterface $em): RedirectResponse
+    public function addabscence(Request $request, PeriodeRepository $periodeRepository, UserRepository $userRepository, MatiereRepository $matiereRepository, ClasseRepository $classeRepository, EntityManagerInterface $em): RedirectResponse
     {
         $matiere = $request->get('matiere');
         $start = $request->get('start');;
@@ -94,8 +91,8 @@ class PresenceStudentController extends AbstractController
         }
 
         $idmatiere = $matiereRepository->find($matiere);
-        $id= $periodeRepository->find($idperiode);
-        $idclas= $classeRepository->find($idclasse);
+        $id = $periodeRepository->find($idperiode);
+        $idclas = $classeRepository->find($idclasse);
 
         $absence->setMatierepresence($idmatiere);
         $absence->setHourstart($start);
@@ -115,7 +112,7 @@ class PresenceStudentController extends AbstractController
     #[Route('/liste-appel/student', name: 'showappel')]
     public function showappel(PresenceStudentRepository $presenceStudentRepository): Response
     {
-        $user = $presenceStudentRepository->findBy(['IsAccept' =>null, 'userpresence'=>$this->getUser() ]);
+        $user = $presenceStudentRepository->findBy(['IsAccept' => null, 'userpresence' => $this->getUser()]);
 
 
         return $this->render('presencestudent/allappel.html.twig', [
@@ -125,13 +122,13 @@ class PresenceStudentController extends AbstractController
     }
 
     #[Route('/appel/student/{id}', name: 'editappel')]
-    public function editappel(PresenceStudent $presenceStudent,MatiereRepository $matiereRepository,PresenceStudentRepository $presenceStudentRepository,UserRepository $userRepository): Response
+    public function editappel(PresenceStudent $presenceStudent, MatiereRepository $matiereRepository, PresenceStudentRepository $presenceStudentRepository, UserRepository $userRepository): Response
     {
-        $user = $presenceStudentRepository->findOneBy(['id'=>$presenceStudent]);
+        $user = $presenceStudentRepository->findOneBy(['id' => $presenceStudent]);
         $matiereuser = $matiereRepository->MatiereByTeacher($this->getUser());
 
-         $a = $userRepository->studentByabsence($user->getId());
-        $b = $userRepository->studentByperioclasse($user->getPeriodepresence()->getId(),$user->getClassepresence()->getId());
+        $a = $userRepository->studentByabsence($user->getId());
+        $b = $userRepository->studentByperioclasse($user->getPeriodepresence()->getId(), $user->getClassepresence()->getId());
 
 
 
@@ -140,24 +137,23 @@ class PresenceStudentController extends AbstractController
         return $this->render('presencestudent/updateappel.html.twig', [
             'matiereusers' => $matiereuser,
             'user' => $user,
-            'userrestants'=>array_diff($b,$a)
+            'userrestants' => array_diff($b, $a)
         ]);
     }
 
     #[Route('/update/appel/{id}', name: 'updateappel')]
-    public function updateappel(PresenceStudent $presenceStudent,Request $request,EntityManagerInterface $em,MatiereRepository $matiereRepository, PresenceStudentRepository $presenceStudentRepository,UserRepository $userRepository): Response
+    public function updateappel(PresenceStudent $presenceStudent, Request $request, EntityManagerInterface $em, MatiereRepository $matiereRepository, PresenceStudentRepository $presenceStudentRepository, UserRepository $userRepository): Response
     {
         $absence = $presenceStudentRepository->find($presenceStudent);
         $matiere = $request->get('matiere');
         $start = $request->get('start');;
         $end = $request->get('end');
         $idstudents = $request->get('student');
-        $b = $userRepository->studentByperioclasse($absence->getPeriodepresence()->getId(),$absence->getClassepresence()->getId());
+        $b = $userRepository->studentByperioclasse($absence->getPeriodepresence()->getId(), $absence->getClassepresence()->getId());
 
         foreach ($b as $values) {
-            $ids = $userRepository->findOneBy(['id'=>$values]);
+            $ids = $userRepository->findOneBy(['id' => $values]);
             $absence->removeStudent($ids);
-
         }
         $idmatiere = $matiereRepository->find($matiere);
         $absence->setMatierepresence($idmatiere);
@@ -167,7 +163,6 @@ class PresenceStudentController extends AbstractController
         foreach ($idstudents as $value) {
             $id = $userRepository->find($value);
             $absence->addStudent($id);
-
         }
         $em->persist($absence);
         $em->flush();

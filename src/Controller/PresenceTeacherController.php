@@ -9,7 +9,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * @Security("is_granted('ROLE_ADMIN') and is_granted('ROLE_TEACHER')")
+ */
 class PresenceTeacherController extends AbstractController
 {
     #[Route('/validation-presence/teacher', name: 'validationteacher')]
@@ -81,7 +85,7 @@ class PresenceTeacherController extends AbstractController
             $b = new \DateTime($value->getHoursend());
 
             // Calcul de la différence d'heure
-            $interval =$b->diff($a);
+            $interval = $b->diff($a);
             $totalHours += $interval->h; // Ajoutez les heures de l'intervalle.
             $totalMinutes += $interval->i; // Ajoute les minutes
 
@@ -89,10 +93,9 @@ class PresenceTeacherController extends AbstractController
 
         return $this->render('presenceteacher/absence.html.twig', [
             'users' => $user,
-            'totalHours'=> $totalHours,
-            'totalMinutes'=> $totalMinutes,
+            'totalHours' => $totalHours,
+            'totalMinutes' => $totalMinutes,
 
         ]);
     }
-
 }

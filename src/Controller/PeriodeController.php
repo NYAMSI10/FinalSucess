@@ -10,11 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class PeriodeController extends AbstractController
 {
     #[Route('/periode', name: 'allperiode')]
-    public function index(PeriodeRepository $periodeRepository,Request $request, EntityManagerInterface $manager): Response
+    public function index(PeriodeRepository $periodeRepository, Request $request, EntityManagerInterface $manager): Response
     {
         $periode = $periodeRepository->findAll();
         $periodes = new Periode();
@@ -22,32 +24,30 @@ class PeriodeController extends AbstractController
         $form = $this->createForm(PeriodeType::class, $periodes);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid())
-        {
-             $manager->persist($periodes);
-             $manager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->persist($periodes);
+            $manager->flush();
 
-              toastr()->addSuccess('Période ajoutée');
+            toastr()->addSuccess('Période ajoutée');
 
-             return $this->redirectToRoute('allperiode');
+            return $this->redirectToRoute('allperiode');
         }
 
-        return $this->render('periode/all.html.twig',[
-            'periodes'=>$periode,
-            'form'=>$form->createView(),
+        return $this->render('periode/all.html.twig', [
+            'periodes' => $periode,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/modifiez-periode/{id}', name: 'updateperiode')]
-    public function updateperiode(Periode $periode,PeriodeRepository $periodeRepository,Request $request, EntityManagerInterface $manager): Response
+    public function updateperiode(Periode $periode, PeriodeRepository $periodeRepository, Request $request, EntityManagerInterface $manager): Response
     {
         $periode = $periodeRepository->find($periode);
 
         $form = $this->createForm(PeriodeType::class, $periode);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $manager->persist($periode);
             $manager->flush();
 
@@ -56,13 +56,13 @@ class PeriodeController extends AbstractController
             return $this->redirectToRoute('allperiode');
         }
 
-        return $this->render('periode/edit.html.twig',[
-            'form'=>$form->createView(),
+        return $this->render('periode/edit.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/deleteperiode/{id}', name: 'deleteperiode')]
-    public function deleteperiode(Periode $periode,EntityManagerInterface $manager): Response
+    public function deleteperiode(Periode $periode, EntityManagerInterface $manager): Response
     {
 
         $manager->remove($periode);
@@ -72,6 +72,4 @@ class PeriodeController extends AbstractController
 
         return $this->redirectToRoute('allperiode');
     }
-
-
 }

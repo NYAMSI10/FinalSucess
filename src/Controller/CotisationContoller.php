@@ -13,7 +13,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class CotisationContoller extends AbstractController
 {
     #[Route('/cotisation', name: 'allcotisation')]
@@ -28,9 +30,12 @@ class CotisationContoller extends AbstractController
     }
 
     #[Route('/addcotisation', name: 'addcotisation')]
-    public function addcotisation(Request $request, FunctionService $functionService, EntityManagerInterface $em,
-         CotisationRepository $cotisationRepository): Response
-    {
+    public function addcotisation(
+        Request $request,
+        FunctionService $functionService,
+        EntityManagerInterface $em,
+        CotisationRepository $cotisationRepository
+    ): Response {
         $cotisation = new Cotisation();
 
         $form = $this->createForm(CotisationType::class, $cotisation);
@@ -44,9 +49,8 @@ class CotisationContoller extends AbstractController
             $mois = $request->get('mois');
             $iduser = $form->get('usercotisation')->getData();
             $somme = $form->get('somme')->getData();
-            $existecotisation = $cotisationRepository->findBy(['moisbouffe'=>$mois, 'somme'=>$somme]);
-            if ($existecotisation)
-            {
+            $existecotisation = $cotisationRepository->findBy(['moisbouffe' => $mois, 'somme' => $somme]);
+            if ($existecotisation) {
                 toastr()->addError('Un enseignant bouffe déjà à ce mois et avec ce montant');
                 return $this->redirectToRoute('addcotisation');
             }
@@ -58,7 +62,6 @@ class CotisationContoller extends AbstractController
             toastr()->addSuccess('Cotisation ajoutée');
 
             return $this->redirectToRoute('allcotisation');
-
         }
 
 
@@ -70,9 +73,14 @@ class CotisationContoller extends AbstractController
     }
 
     #[Route('/updatecotisation/{id}', name: 'updatecotisation')]
-    public function updatecotisation(Cotisation     $cotisation, Request $request, FunctionService $functionService, EntityManagerInterface $em, CotisationRepository $cotisationRepository,
-                                     UserRepository $userRepository): Response
-    {
+    public function updatecotisation(
+        Cotisation     $cotisation,
+        Request $request,
+        FunctionService $functionService,
+        EntityManagerInterface $em,
+        CotisationRepository $cotisationRepository,
+        UserRepository $userRepository
+    ): Response {
         $cotisations = $cotisationRepository->find($cotisation);
         $form = $this->createForm(CotisationType::class, $cotisations);
         $form->handleRequest($request);
@@ -86,7 +94,7 @@ class CotisationContoller extends AbstractController
             $mois = $request->get('mois');
             $iduser = $request->get('enseignant');
             $somme = $form->get('somme')->getData();
-          /*  $existecotisation = $cotisationRepository->findBy(['moisbouffe'=>$mois, 'somme'=>$somme]);
+            /*  $existecotisation = $cotisationRepository->findBy(['moisbouffe'=>$mois, 'somme'=>$somme]);
             if ($cotisations->getMoisbouffe())
             {
                 toastr()->addError('Un enseignant bouffe déjà à ce mois et avec ce montant');
@@ -101,7 +109,6 @@ class CotisationContoller extends AbstractController
             toastr()->addSuccess('Cotisation modifiée');
 
             return $this->redirectToRoute('allcotisation');
-
         } else {
             $form->remove('usercotisation');
             return $this->render('cotisation/edit.html.twig', [
@@ -112,12 +119,10 @@ class CotisationContoller extends AbstractController
                 'allteacher' => $allteacher,
             ]);
         }
-
-
     }
 
     #[Route('/deletecotisation/{id}', name: 'deletecotisation')]
-    public function deletecotisation(Cotisation  $cotisation,EntityManagerInterface $manager): RedirectResponse
+    public function deletecotisation(Cotisation  $cotisation, EntityManagerInterface $manager): RedirectResponse
     {
 
         $manager->remove($cotisation);
@@ -127,6 +132,4 @@ class CotisationContoller extends AbstractController
 
         return $this->redirectToRoute('allcotisation');
     }
-
-
 }
